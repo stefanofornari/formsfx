@@ -17,14 +17,6 @@
     <name>FormsFX Core</name>
     <description>A framework for quickly creating form-based UIs.</description>
 
-    <developers>
-        <developer>
-            <name>Dirk Lemmermann</name>
-            <url>http://www.dlsc.com</url>
-            <organization>DLSC Software &amp; Consulting</organization>
-        </developer>
-    </developers>
-
     <build>
         <plugins>
             <plugin>

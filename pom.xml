@@ -10,6 +10,13 @@
     <packaging>pom</packaging>
     <version>26.0.0</version>
     <url>https://github.com/stefanofornari/formsfx</url>
+    <description>
+        FormsFX - Create forms with ease and creates well-designed and
+        user-friendly forms by default.
+
+        This is a repackaging with modification of original
+        dlsc-software-consulting-gmbh/FormsFX
+    </description>
 
     <licenses>
         <license>
@@ -19,10 +26,31 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <name>Dirk Lemmermann</name>
+            <url>http://www.dlsc.com</url>
+            <organization>DLSC Software &amp; Consulting</organization>
+        </developer>
+        <developer>
+            <name>Stefano Fonari</name>
+            <url>https://github.com/stefanofornari</url>
+        </developer>
+    </developers>
+
     <modules>
         <module>formsfx</module>
         <module>formsfx-demo</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <modules>
+                <module>formsfx</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <properties>
         <project.identifier>formsfx</project.identifier>
