@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.github.stefanofornari</groupId>
         <artifactId>formsfxparent</artifactId>
-        <version>26.0.0</version>
+        <version>26.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>formsfx</artifactId>
