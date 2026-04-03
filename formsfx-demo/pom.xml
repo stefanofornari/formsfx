@@ -18,7 +18,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>ste.jfx</groupId>
+            <groupId>com.github.stefanofornari</groupId>
             <artifactId>formsfx</artifactId>
             <version>26.0.0</version>
         </dependency>
