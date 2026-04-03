@@ -4,29 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.stefanofornari</groupId>
+    <parent>
+        <groupId>com.github.stefanofornari</groupId>
+        <artifactId>formsfxparent</artifactId>
+        <version>26.0.0</version>
+    </parent>
+
     <artifactId>formsfx</artifactId>
     <version>26.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>FormsFX Core</name>
     <description>A framework for quickly creating form-based UIs.</description>
-    <url>https://github.com/stefanofornari/formsfx</url>
-
-    <parent>
-        <groupId>ste.jfx</groupId>
-        <artifactId>formsfxparent</artifactId>
-        <version>26.0.0</version>
-    </parent>
-
-    <licenses>
-        <license>
-            <name>Apache 2.0</name>
-        </license>
-    </licenses>
-    <scm>
-        <url>https://github.com/stefanofornari/formsfx</url>
-    </scm>
 
     <developers>
         <developer>

@@ -9,6 +9,7 @@
     <artifactId>formsfxparent</artifactId>
     <packaging>pom</packaging>
     <version>26.0.0</version>
+    <url>https://github.com/stefanofornari/formsfx</url>
 
     <licenses>
         <license>
@@ -25,7 +26,7 @@
 
     <properties>
         <project.identifier>formsfx</project.identifier>
-        <project.github.repository>dstefanofornari/FormsFX</project.github.repository>
+        <project.github.repository>stefanofornari/formsfx</project.github.repository>
         <java.version>11</java.version>
         <javafx.version>21.0.10</javafx.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
