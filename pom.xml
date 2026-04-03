@@ -6,7 +6,7 @@
     <groupId>ste.jfx</groupId>
     <artifactId>formsfxparent</artifactId>
     <packaging>pom</packaging>
-    <version>26.0.0</version>
+    <version>26.0.1-SNAPSHOT</version>
 
     <modules>
         <module>formsfx</module>
@@ -69,7 +69,7 @@
     <scm>
         <connection>scm:git:git@github.com:stefanofornari/formsfx.git</connection>
         <url>https://github.com/stefanofornari/formsfx</url>
-        <tag>formsfxparent-26.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>

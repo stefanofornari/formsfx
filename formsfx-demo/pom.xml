@@ -4,7 +4,7 @@
     <parent>
         <groupId>ste.jfx</groupId>
         <artifactId>formsfxparent</artifactId>
-        <version>26.0.0</version>
+        <version>26.0.1-SNAPSHOT</version>
     </parent>
 
     <name>FormsFX Demo</name>
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>ste.jfx</groupId>
             <artifactId>formsfx</artifactId>
-            <version>26.0.0</version>
+            <version>26.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

@@ -4,7 +4,7 @@
 
     <groupId>ste.jfx</groupId>
     <artifactId>formsfx</artifactId>
-    <version>26.0.0</version>
+    <version>26.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>FormsFX Core</name>
@@ -14,7 +14,7 @@
     <parent>
         <groupId>ste.jfx</groupId>
         <artifactId>formsfxparent</artifactId>
-        <version>26.0.0</version>
+        <version>26.0.1-SNAPSHOT</version>
     </parent>
 
     <licenses>
@@ -24,7 +24,7 @@
     </licenses>
     <scm>
         <url>https://github.com/stefanofornari/formsfx</url>
-      <tag>formsfxparent-26.0.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <developers>
