@@ -2,11 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<groupId>com.dlsc.formsfx</groupId>
-		<artifactId>formsfx</artifactId>
-		<version>11.6.0</version>
-	</parent>
+
+    <parent>
+        <groupId>ste.jfx</groupId>
+        <artifactId>formsfxparent</artifactId>
+        <version>26.0.0</version>
+    </parent>
 
     <name>FormsFX Demo</name>
     <packaging>jar</packaging>
@@ -17,9 +18,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.dlsc.formsfx</groupId>
-            <artifactId>formsfx-core</artifactId>
-            <version>11.6.0</version>
+            <groupId>ste.jfx</groupId>
+            <artifactId>formsfx</artifactId>
+            <version>26.0.0</version>
         </dependency>
     </dependencies>
 
