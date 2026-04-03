@@ -6,6 +6,7 @@
 
     <groupId>ste.jfx</groupId>
     <artifactId>formsfx</artifactId>
+    <version>26.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>FormsFX Core</name>
@@ -184,4 +185,5 @@
         </dependency>
 
     </dependencies>
+
 </project>
