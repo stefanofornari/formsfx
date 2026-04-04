@@ -227,7 +227,7 @@ public class FieldTest {
 
         s.bind(sp);
 
-        then(s.getValue()).isEqualTo("test 3");
+        then(s.persistentValue.getValue()).isEqualTo("test 3");
     }
 
 }

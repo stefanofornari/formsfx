@@ -1,6 +1,6 @@
 package com.dlsc.formsfx.view.controls;
 
-/* -
+/*-
  * ========================LICENSE_START=================================
  * FormsFX
  * %%
@@ -19,14 +19,17 @@ package com.dlsc.formsfx.view.controls;
  * limitations under the License.
  * =========================LICENSE_END==================================
  */
-import java.util.ArrayList;
-import java.util.List;
-
-import javafx.scene.control.CheckBox;
-import javafx.scene.layout.VBox;
 
 import com.dlsc.formsfx.model.structure.MultiSelectionField;
-import com.dlsc.formsfx.view.util.VisibilityProperty;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class provides the base implementation for a simple control to edit
@@ -34,149 +37,147 @@ import com.dlsc.formsfx.view.util.VisibilityProperty;
  *
  * @author Rinesch Murugathas
  * @author Sacha Schmid
- * @author François Martin
- * @author Marco Sanfratello
  */
 public class SimpleCheckBoxControl<V> extends SimpleControl<MultiSelectionField<V>, VBox> {
 
-  /**
-   * - The checkboxes list contains all the checkboxes to display.
-   * - The node is a VBox holding all node.
-   */
-  protected final List<CheckBox> checkboxes = new ArrayList<>();
+    /**
+     * The checkboxes list contains all the checkboxes to display.
+     */
+    protected final List<CheckBox> checkboxes = new ArrayList<>();
 
-  /**
-   * Constructs a SimpleCheckBoxControl of {@link SimpleCheckBoxControl} type, with visibility condition.
-   *
-   * @param visibilityProperty - property for control visibility of this element
-   *
-   * @return the constructed SimpleCheckBoxControl
-   */
-  public static <V> SimpleCheckBoxControl of(VisibilityProperty visibilityProperty) {
-    SimpleCheckBoxControl<V> simpleCheckBoxControl = new SimpleCheckBoxControl<>();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initializeParts() {
+        super.initializeParts();
 
-    simpleCheckBoxControl.visibilityProperty = visibilityProperty;
+        getStyleClass().add("simple-checkbox-control");
 
-    return simpleCheckBoxControl;
-  }
+        fieldLabel = new Label(field.labelProperty().getValue());
+        node = new VBox();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void initializeParts() {
-    super.initializeParts();
-
-    node = new VBox();
-    node.getStyleClass().add("simple-checkbox-control");
-
-    createCheckboxes();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void layoutParts() {
-    node.setSpacing(5);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupBindings() {
-    super.setupBindings();
-    setupCheckboxBindings();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupValueChangedListeners() {
-    super.setupValueChangedListeners();
-
-    field.itemsProperty().addListener((observable, oldValue, newValue) -> {
-      createCheckboxes();
-      setupCheckboxBindings();
-      setupCheckboxEventHandlers();
-    });
-
-    field.selectionProperty().addListener((observable, oldValue, newValue) -> {
-      for (int i = 0; i < checkboxes.size(); i++) {
-        checkboxes.get(i).setSelected(field.getSelection().contains(field.getItems().get(i)));
-      }
-    });
-
-    field.errorMessagesProperty().addListener((observable, oldValue, newValue) ->
-        toggleTooltip(node, checkboxes.get(checkboxes.size() - 1))
-    );
-    field.tooltipProperty().addListener((observable, oldValue, newValue) ->
-        toggleTooltip(node, checkboxes.get(checkboxes.size() - 1))
-    );
-
-    for (int i = 0; i < checkboxes.size(); i++) {
-      checkboxes.get(i).focusedProperty().addListener((observable, oldValue, newValue) ->
-          toggleTooltip(node, checkboxes.get(checkboxes.size() - 1))
-      );
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupEventHandlers() {
-    node.setOnMouseEntered(event -> toggleTooltip(node, checkboxes.get(checkboxes.size() - 1)));
-    node.setOnMouseExited(event -> toggleTooltip(node, checkboxes.get(checkboxes.size() - 1)));
-    setupCheckboxEventHandlers();
-  }
-
-  /**
-   * This method creates node and adds them to checkboxes and is
-   * used when the itemsProperty on the field changes.
-   */
-  protected void createCheckboxes() {
-    node.getChildren().clear();
-    checkboxes.clear();
-
-    for (int i = 0; i < field.getItems().size(); i++) {
-      CheckBox cb = new CheckBox();
-
-      cb.setText(field.getItems().get(i).toString());
-      cb.setSelected(field.getSelection().contains(field.getItems().get(i)));
-
-      checkboxes.add(cb);
+        createCheckboxes();
     }
 
-    node.getChildren().addAll(checkboxes);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void layoutParts() {
+        super.layoutParts();
 
-  /**
-   * Sets up bindings for all checkboxes.
-   */
-  protected void setupCheckboxBindings() {
-    for (CheckBox checkbox : checkboxes) {
-      checkbox.disableProperty().bind(field.editableProperty().not());
-    }
-  }
+        int columns = field.getSpan();
 
-  /**
-   * Sets up event handlers for all checkboxes.
-   */
-  protected void setupCheckboxEventHandlers() {
-    for (int i = 0; i < checkboxes.size(); i++) {
-      final int j = i;
+        node.setSpacing(5);
 
-      checkboxes.get(i).setOnAction(event -> {
-        if (checkboxes.get(j).isSelected()) {
-          field.select(j);
-        } else {
-          field.deselect(j);
+        Node labelDescription = field.getLabelDescription();
+        Node valueDescription = field.getValueDescription();
+
+        add(fieldLabel, 0, 0, 2, 1);
+        if (labelDescription != null) {
+            GridPane.setValignment(labelDescription, VPos.TOP);
+            add(labelDescription, 0, 1, 2, 1);
         }
-      });
+        add(node, 2, 0, columns - 2, 1);
+        if (valueDescription != null) {
+            GridPane.setValignment(valueDescription, VPos.TOP);
+            add(valueDescription, 2, 1, columns - 2, 1);
+        }
     }
-  }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupBindings() {
+        super.setupBindings();
+
+        fieldLabel.textProperty().bind(field.labelProperty());
+        setupCheckboxBindings();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupValueChangedListeners() {
+        super.setupValueChangedListeners();
+
+        field.itemsProperty().addListener((observable, oldValue, newValue) -> {
+            createCheckboxes();
+            setupCheckboxBindings();
+            setupCheckboxEventHandlers();
+        });
+
+        field.selectionProperty().addListener((observable, oldValue, newValue) -> {
+            for (int i = 0; i < checkboxes.size(); i++) {
+                checkboxes.get(i).setSelected(field.getSelection().contains(field.getItems().get(i)));
+            }
+        });
+
+        field.errorMessagesProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(node, checkboxes.get(checkboxes.size() - 1)));
+        field.tooltipProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(node, checkboxes.get(checkboxes.size() - 1)));
+
+        for (int i = 0; i < checkboxes.size(); i++) {
+            checkboxes.get(i).focusedProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(node, checkboxes.get(checkboxes.size() - 1)));
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupEventHandlers() {
+        node.setOnMouseEntered(event -> toggleTooltip(node, checkboxes.get(checkboxes.size() - 1)));
+        node.setOnMouseExited(event -> toggleTooltip(node, checkboxes.get(checkboxes.size() - 1)));
+        setupCheckboxEventHandlers();
+    }
+
+    /**
+     * This method creates box and adds them to checkboxes and is
+     * used when the itemsProperty on the field changes.
+     */
+    protected void createCheckboxes() {
+        node.getChildren().clear();
+        checkboxes.clear();
+
+        for (int i = 0; i < field.getItems().size(); i++) {
+            CheckBox cb = new CheckBox();
+
+            cb.setText(field.getItems().get(i).toString());
+            cb.setSelected(field.getSelection().contains(field.getItems().get(i)));
+
+            checkboxes.add(cb);
+        }
+
+        node.getChildren().addAll(checkboxes);
+    }
+
+    /**
+     * Sets up bindings for all checkboxes.
+     */
+    protected void setupCheckboxBindings() {
+        for (CheckBox checkbox : checkboxes) {
+            checkbox.disableProperty().bind(field.editableProperty().not());
+        }
+    }
+
+    /**
+     * Sets up event handlers for all checkboxes.
+     */
+    protected void setupCheckboxEventHandlers() {
+        for (int i = 0; i < checkboxes.size(); i++) {
+            final int j = i;
+
+            checkboxes.get(i).setOnAction(event -> {
+                if (checkboxes.get(j).isSelected()) {
+                    field.select(j);
+                } else {
+                    field.deselect(j);
+                }
+            });
+        }
+    }
 
 }

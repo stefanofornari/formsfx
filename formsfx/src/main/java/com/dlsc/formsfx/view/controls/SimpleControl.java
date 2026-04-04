@@ -1,6 +1,6 @@
 package com.dlsc.formsfx.view.controls;
 
-/* -
+/*-
  * ========================LICENSE_START=================================
  * FormsFX
  * %%
@@ -19,7 +19,9 @@ package com.dlsc.formsfx.view.controls;
  * limitations under the License.
  * =========================LICENSE_END==================================
  */
-
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.view.util.ViewMixin;
+import com.dlsc.formsfx.view.util.VisibilityProperty;
 import javafx.collections.ListChangeListener;
 import javafx.css.PseudoClass;
 import javafx.geometry.Point2D;
@@ -31,305 +33,217 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
-import com.dlsc.formsfx.model.structure.Field;
-import com.dlsc.formsfx.view.util.VisibilityProperty;
-import com.dlsc.formsfx.view.util.ViewMixin;
-import javafx.util.Duration;
-
 /**
  * This class provides a base for general purpose FormsFX controls.
  *
  * @author Sacha Schmid
  * @author Rinesch Murugathas
- * @author François Martin
- * @author Marco Sanfratello
  */
 public abstract class SimpleControl<F extends Field, N extends Node>
     extends GridPane implements ViewMixin {
 
-  /**
-   * Pseudo classes for state changes.
-   */
-  protected static final PseudoClass REQUIRED_CLASS = PseudoClass.getPseudoClass("required");
-  protected static final PseudoClass INVALID_CLASS = PseudoClass.getPseudoClass("invalid");
-  protected static final PseudoClass CHANGED_CLASS = PseudoClass.getPseudoClass("changed");
-  protected static final PseudoClass DISABLED_CLASS = PseudoClass.getPseudoClass("disabled");
+    /**
+     * This is the Field that is used for binding and update styling changes.
+     */
+    protected F field;
 
-  /**
-   * This is the Field that is used for binding and update styling changes.
-   */
-  protected F field;
+    /**
+     * The FX node of the control, usually a container of the control's elements
+     */
+    protected N node;
 
-  /**
-   * Tooltip to hold the error message.
-   */
-  protected Tooltip tooltip;
+    /**
+     * The label which gets rendered on the left of the node.
+     */
+    protected Label fieldLabel;
 
-  /**
-   * The label which gets rendered on the left of the node.
-   */
-  protected Label fieldLabel;
+    /**
+     * Property for control visibility.
+     */
+    protected VisibilityProperty visibilityProperty;
 
-  /**
-   * The control which gets rendered.
-   */
-  protected N node;
+    /**
+     * Tooltip to hold the error message.
+     */
+    protected Tooltip tooltip;
 
-  /**
-   * Property for control visibility.
-   */
-  protected VisibilityProperty visibilityProperty;
+    /**
+     * Pseudo classes for state changes.
+     */
+    protected static final PseudoClass REQUIRED_CLASS = PseudoClass.getPseudoClass("required");
+    protected static final PseudoClass INVALID_CLASS = PseudoClass.getPseudoClass("invalid");
+    protected static final PseudoClass CHANGED_CLASS = PseudoClass.getPseudoClass("changed");
+    protected static final PseudoClass DISABLED_CLASS = PseudoClass.getPseudoClass("disabled");
 
-  /**
-   * Sets the field for the control.
-   *
-   * @param field The field to be set.
-   */
-  public void setField(F field) {
-    if (this.field != null) {
-      throw new IllegalStateException("Cannot change a control's field once set.");
-    }
-
-    this.field = field;
-    init();
-  }
-
-  @Override
-  public void init() {
-    this.initializeSelf();
-    this.initializeParts();
-    this.updatePseudoStyles();
-    this.layoutParts();
-    this.setupEventHandlers();
-    this.setupValueChangedListeners();
-    this.setupBindings();
-  }
-
-  @Override
-  public void initializeParts() {
-    getStyleClass().add("simple-control");
-    getStyleClass().addAll(field.getStyleClass());
-
-    updateStyle(INVALID_CLASS, !field.isValid());
-    updateStyle(REQUIRED_CLASS, field.isRequired());
-    updateStyle(CHANGED_CLASS, field.hasChanged());
-    updateStyle(DISABLED_CLASS, !field.isEditable());
-
-    field.getStyleClass().add("simple-control");
-    fieldLabel = new Label();
-    fieldLabel.getStyleClass().addAll(field.getStyleClass());
-
-    tooltip = new Tooltip();
-    tooltip.getStyleClass().add("simple-tooltip");
-    tooltip.setShowDelay(Duration.millis(500));
-    tooltip.setOnShowing(event -> {
-        tooltipText();
-    });
-    
-    // Install tooltip on the control itself for proper JavaFX tooltip behavior
-    Tooltip.install(this, tooltip);
-  }
-
-  protected void updatePseudoStyles() {
-    updateStyle(INVALID_CLASS, !field.isValid());
-    updateStyle(REQUIRED_CLASS, field.isRequired());
-    updateStyle(CHANGED_CLASS, field.hasChanged());
-    updateStyle(DISABLED_CLASS, !field.isEditable());
-  }
-
-  @Override
-  public void layoutParts() {
-    setAlignment(Pos.CENTER_LEFT);
-
-    int columns = field.getSpan();
-
-    for (int i = 0; i < columns; i++) {
-      ColumnConstraints colConst = new ColumnConstraints();
-      colConst.setPercentWidth(100.0 / columns);
-      getColumnConstraints().add(colConst);
-    }
-  }
-
-  @Override
-  public void setupBindings() {
-    idProperty().bind(field.idProperty());
-
-    if (node != null) {
-      node.idProperty().bind(field.idProperty());
-      node.disableProperty().bind(field.editableProperty().not());
-    }
-
-    if (fieldLabel != null) {
-      fieldLabel.textProperty().bind(field.labelProperty());
-    }
-
-    if (this.visibilityProperty != null) {
-      if (this.node != null) {
-        this.node.visibleProperty().bind(this.visibilityProperty.get());
-        this.node.managedProperty().bind(this.visibilityProperty.get());
-      }
-
-      if (this.getFieldLabel() != null) {
-        this.getFieldLabel().visibleProperty().bind(this.visibilityProperty.get());
-        this.getFieldLabel().managedProperty().bind(this.visibilityProperty.get());
-      }
-    }
-  }
-
-  @Override
-  public void setupValueChangedListeners() {
-    field.validProperty().addListener(
-        (observable, oldValue, newValue) -> updateStyle(INVALID_CLASS, !newValue)
-    );
-    field.requiredProperty().addListener(
-        (observable, oldValue, newValue) -> updateStyle(REQUIRED_CLASS, newValue)
-    );
-    field.changedProperty().addListener(
-        (observable, oldValue, newValue) -> updateStyle(CHANGED_CLASS, newValue)
-    );
-    field.editableProperty().addListener(
-        (observable, oldValue, newValue) -> updateStyle(DISABLED_CLASS, !newValue)
-    );
-
-    field.getStyleClass().addListener((ListChangeListener<String>) c -> {
-      while (c.next()) {
-        if (c.wasRemoved()) {
-          if (fieldLabel != null) {
-            fieldLabel.getStyleClass().removeAll(c.getRemoved());
-          }
-          if (node != null) {
-            node.getStyleClass().removeAll(c.getRemoved());
-          }
+    public void setField(F field) {
+        if (this.field != null) {
+            throw new IllegalStateException("Cannot change a control's field once set.");
         }
 
-        if (c.wasAdded()) {
-          if (fieldLabel != null) {
-            fieldLabel.getStyleClass().addAll(c.getAddedSubList());
-          }
-          if (node != null) {
-            node.getStyleClass().addAll(c.getAddedSubList());
-          }
+        this.field = field;
+        init();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initializeParts() {
+        getStyleClass().add("simple-control");
+
+        tooltip = new Tooltip();
+        tooltip.getStyleClass().add("simple-tooltip");
+
+        getStyleClass().addAll(field.getStyleClass());
+
+        fieldLabel = new Label();
+        fieldLabel.getStyleClass().addAll(field.getStyleClass());
+
+        updateStyle(INVALID_CLASS, !field.isValid());
+        updateStyle(REQUIRED_CLASS, field.isRequired());
+        updateStyle(CHANGED_CLASS, field.hasChanged());
+        updateStyle(DISABLED_CLASS, !field.isEditable());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void layoutParts() {
+        setAlignment(Pos.CENTER_LEFT);
+
+        int columns = field.getSpan();
+
+        for (int i = 0; i < columns; i++) {
+            ColumnConstraints colConst = new ColumnConstraints();
+            colConst.setPercentWidth(100.0 / columns);
+            getColumnConstraints().add(colConst);
         }
-      }
-    });
-  }
-
-  /**
-   * Sets the error message as tooltip for the matching control and shows
-   * them below the same control.
-   *
-   * @param reference The control which gets the tooltip.
-   */
-  protected void toggleTooltip(Node reference) {
-    if (reference instanceof Control) {
-      this.toggleTooltip(reference, (Control) reference);
     }
-  }
 
-  /**
-   * Sets the error message as tooltip for the matching control.
-   *
-   * @param below     The control needed for positioning the tooltip.
-   * @param reference The control which gets the tooltip.
-   */
-  protected void toggleTooltip(Node reference, Control below) {
-    String fieldTooltip = field.getTooltip();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupBindings() {
+        idProperty().bind(field.idProperty());
 
-    if ((reference.isFocused() || reference.isHover())
-        && (!fieldTooltip.equals("") || field.getErrorMessages().size() > 0)) {
-      tooltip.setText((!fieldTooltip.equals("") ? fieldTooltip + "\n" : "")
-          + String.join("\n", field.getErrorMessages()));
+        // TODO
+        // node.idProperty().bind(field.idProperty());
+        // node.disableProperty().bind(field.editableProperty().not());
+        // fieldLabel.textProperty().bind(field.labelProperty());
 
-      if (tooltip.isShowing()) {
-        return;
-      }
+        if (this.visibilityProperty != null) {
+            this.node.visibleProperty().bind(this.visibilityProperty.get());
+            this.node.managedProperty().bind(this.visibilityProperty.get());
 
-      Point2D p = below.localToScene(0.0, 0.0);
-
-      tooltip.show(
-          getScene().getWindow(),
-          p.getX() + getScene().getX() + getScene().getWindow().getX(),
-          p.getY() + getScene().getY() + getScene().getWindow().getY()
-              + below.getHeight() + 5
-      );
-    } else {
-      tooltip.hide();
+            this.fieldLabel().visibleProperty().bind(this.visibilityProperty.get());
+            this.fieldLabel().managedProperty().bind(this.visibilityProperty.get());
+        }
     }
-  }
 
-  protected void tooltipText() {
-    final String fieldTooltip = field.getTooltip();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupValueChangedListeners() {
+        field.validProperty().addListener((observable, oldValue, newValue) -> updateStyle(INVALID_CLASS, !newValue));
+        field.requiredProperty().addListener((observable, oldValue, newValue) -> updateStyle(REQUIRED_CLASS, newValue));
+        field.changedProperty().addListener((observable, oldValue, newValue) -> updateStyle(CHANGED_CLASS, newValue));
+        field.editableProperty().addListener((observable, oldValue, newValue) -> updateStyle(DISABLED_CLASS, !newValue));
 
-    if (!fieldTooltip.isBlank() || !field.getErrorMessages().isEmpty()) {
-      tooltip.setText(((!fieldTooltip.isBlank()) ? fieldTooltip + "\n" : "")
-          + String.join("\n", field.getErrorMessages()));
+        field.getStyleClass().addListener((ListChangeListener<String>) c -> {
+            while (c.next()) {
+                if (c.wasRemoved()) {
+                    getStyleClass().removeAll(c.getRemoved());
+                }
+
+                if (c.wasAdded()) {
+                    getStyleClass().addAll(c.getAddedSubList());
+                }
+            }
+        });
     }
-  }
 
-  /**
-   * Sets the css style for the defined properties.
-   *
-   * @param pseudo   The CSS pseudo class to toggle.
-   * @param newValue Determines whether the CSS class should be applied.
-   */
-  protected void updateStyle(PseudoClass pseudo, boolean newValue) {
-    pseudoClassStateChanged(pseudo, newValue);
-
-    if (node != null) {
-      node.pseudoClassStateChanged(pseudo, newValue);
+    /**
+     * Sets the error message as tooltip for the matching control and shows them
+     * below the same control.
+     *
+     * @param reference The control which gets the tooltip.
+     */
+    protected void toggleTooltip(Node reference) {
+        this.toggleTooltip(reference, (Control) reference);
     }
-    if (fieldLabel != null) {
-      fieldLabel.pseudoClassStateChanged(pseudo, newValue);
+
+    /**
+     * Sets the error message as tooltip for the matching control.
+     *
+     * @param below The control needed for positioning the tooltip.
+     * @param reference The control which gets the tooltip.
+     */
+    protected void toggleTooltip(Node reference, Control below) {
+        String fieldTooltip = field.getTooltip();
+
+        if ((reference.isFocused() || reference.isHover()) && (!fieldTooltip.equals("") || field.getErrorMessages().size() > 0)) {
+            tooltip.setText((!fieldTooltip.equals("") ? fieldTooltip + "\n" : "") + String.join("\n", field.getErrorMessages()));
+
+            if (tooltip.isShowing()) {
+                return;
+            }
+
+            Point2D p = below.localToScene(0.0, 0.0);
+
+            tooltip.show(
+                getScene().getWindow(),
+                p.getX() + getScene().getX() + getScene().getWindow().getX(),
+                p.getY() + getScene().getY() + getScene().getWindow().getY() + below.getHeight() + 5
+            );
+        } else {
+            tooltip.hide();
+        }
     }
-  }
 
-  @Override
-  public void setupEventHandlers() {
-    // No need for manual mouse event handlers since we use Tooltip.install()
-    // which handles tooltip display automatically via JavaFX's built-in mechanism
-  }
-
-  /**
-   * Adds a style class to the control.
-   *
-   * @param name of the style class to be added to the control
-   */
-  public void addStyleClass(String name) {
-    getStyleClass().add(name);
-    if (node != null) {
-      node.getStyleClass().add(name);
+    /**
+     * Sets the css style for the defined properties.
+     *
+     * @param pseudo The CSS pseudo class to toggle.
+     * @param newValue Determines whether the CSS class should be applied.
+     */
+    protected void updateStyle(PseudoClass pseudo, boolean newValue) {
+        pseudoClassStateChanged(pseudo, newValue);
     }
-  }
 
-  /**
-   * Removes a style class from the control.
-   *
-   * @param name of the class to be removed from the control
-   */
-  public void removeStyleClass(String name) {
-    getStyleClass().remove(name);
-    if (node != null) {
-      node.getStyleClass().remove(name);
+    /**
+     * Adds a style class to the control.
+     *
+     * @param name of the style class to be added to the control
+     */
+    public void addStyleClass(String name) {
+        getStyleClass().add(name);
     }
-  }
 
-  public F getField() {
-    return field;
-  }
+    /**
+     * Removes a style class from the control.
+     *
+     * @param name of the class to be removed from the control
+     */
+    public void removeStyleClass(String name) {
+        getStyleClass().remove(name);
+    }
 
-  public Label getFieldLabel() {
-    return fieldLabel;
-  }
+    public Label fieldLabel() {
+        return fieldLabel;
+    }
 
-  public N getNode() {
-    return node;
-  }
+    public Node node() {
+        return node;
+    }
 
-  public VisibilityProperty getVisibilityProperty() {
-    return this.visibilityProperty;
-  }
+    public VisibilityProperty visibilityProperty() {
+        return this.visibilityProperty;
+    }
 
-  public void setVisibilityProperty(VisibilityProperty visibilityProperty) {
-    this.visibilityProperty = visibilityProperty;
-  }
+    public void visibilityProperty(VisibilityProperty visibilityProperty) {
+        this.visibilityProperty = visibilityProperty;
+    }
 }

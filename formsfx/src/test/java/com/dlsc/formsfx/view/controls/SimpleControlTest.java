@@ -71,32 +71,32 @@ public class SimpleControlTest {
         SimpleComboBoxControl<Integer> cmb = new SimpleComboBoxControl<>();
         cmb.setField(sf);
 
-        then(((VBox) cb.getNode()).getChildren().size()).isEqualTo(3);
-        then(((CheckBox) ((VBox) cb.getNode()).getChildren().get(1)).isSelected()).isTrue();
+        then(((VBox) cb.node()).getChildren().size()).isEqualTo(3);
+        then(((CheckBox) ((VBox) cb.node()).getChildren().get(1)).isSelected()).isTrue();
 
-        then(((ListView) lv.getNode()).getItems().size()).isEqualTo(3);
-        then(((ListView) lv.getNode()).getSelectionModel().isSelected(1)).isTrue();
+        then(((ListView) lv.node()).getItems().size()).isEqualTo(3);
+        then(((ListView) lv.node()).getSelectionModel().isSelected(1)).isTrue();
 
-        then(((VBox) rb.getNode()).getChildren().size()).isEqualTo(3);
-        then(((RadioButton) ((VBox) rb.getNode()).getChildren().get(1)).isSelected()).isTrue();
+        then(((VBox) rb.node()).getChildren().size()).isEqualTo(3);
+        then(((RadioButton) ((VBox) rb.node()).getChildren().get(1)).isSelected()).isTrue();
 
-        then(((ComboBox) ((StackPane) cmb.getNode()).getChildren().get(0)).getItems().size()).isEqualTo(3);
-        then(((ComboBox) ((StackPane) cmb.getNode()).getChildren().get(0)).getSelectionModel().isSelected(1)).isTrue();
+        then(((ComboBox) ((StackPane) cmb.node()).getChildren().get(0)).getItems().size()).isEqualTo(3);
+        then(((ComboBox) ((StackPane) cmb.node()).getChildren().get(0)).getSelectionModel().isSelected(1)).isTrue();
 
         mf.items(Arrays.asList(1, 2, 3, 4, 5), Arrays.asList(0, 3));
         sf.items(Arrays.asList(1, 2, 3, 4, 5), 3);
 
-        then(((VBox) cb.getNode()).getChildren().size()).isEqualTo(5);
-        then(((CheckBox) ((VBox) cb.getNode()).getChildren().get(0)).isSelected()).isTrue();
+        then(((VBox) cb.node()).getChildren().size()).isEqualTo(5);
+        then(((CheckBox) ((VBox) cb.node()).getChildren().get(0)).isSelected()).isTrue();
 
-        then(((ListView) lv.getNode()).getItems().size()).isEqualTo(5);
-        then(((ListView) lv.getNode()).getSelectionModel().isSelected(0)).isTrue();
+        then(((ListView) lv.node()).getItems().size()).isEqualTo(5);
+        then(((ListView) lv.node()).getSelectionModel().isSelected(0)).isTrue();
 
-        then(((VBox) rb.getNode()).getChildren().size()).isEqualTo(5);
-        then(((RadioButton) ((VBox) rb.getNode()).getChildren().get(3)).isSelected()).isTrue();
+        then(((VBox) rb.node()).getChildren().size()).isEqualTo(5);
+        then(((RadioButton) ((VBox) rb.node()).getChildren().get(3)).isSelected()).isTrue();
 
-        then(((ComboBox) ((StackPane) cmb.getNode()).getChildren().get(0)).getItems().size()).isEqualTo(5);
-        then(((ComboBox) ((StackPane) cmb.getNode()).getChildren().get(0)).getSelectionModel().isSelected(3)).isTrue();
+        then(((ComboBox) ((StackPane) cmb.node()).getChildren().get(0)).getItems().size()).isEqualTo(5);
+        then(((ComboBox) ((StackPane) cmb.node()).getChildren().get(0)).getSelectionModel().isSelected(3)).isTrue();
     }
 
     @Disabled

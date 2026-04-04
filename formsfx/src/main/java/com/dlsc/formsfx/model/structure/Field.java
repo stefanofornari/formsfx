@@ -108,6 +108,7 @@ public abstract class Field<F extends Field<F>> extends Element<F> implements Fo
      * Fields can be styled using CSS through ID or class hooks.
      */
     protected final StringProperty id = new SimpleStringProperty(UUID.randomUUID().toString());
+    protected final ListProperty<String> styleClass = new SimpleListProperty<>(FXCollections.observableArrayList());
     protected final IntegerProperty span = new SimpleIntegerProperty(12);
 
     /**
@@ -140,8 +141,8 @@ public abstract class Field<F extends Field<F>> extends Element<F> implements Fo
      */
     protected TranslationService translationService;
 
-    protected SimpleControl<F, ? extends Node> renderer;
-    protected Supplier<SimpleControl<F, ? extends Node>> rendererSupplier;
+    protected SimpleControl<F, ?> renderer;
+    protected Supplier<SimpleControl<F, ?>> rendererSupplier;
 
     protected final Map<EventType<FieldEvent>,List<EventHandler<? super FieldEvent>>> eventHandlers = new ConcurrentHashMap<>();
 
@@ -625,7 +626,7 @@ public abstract class Field<F extends Field<F>> extends Element<F> implements Fo
      *
      * @return Returns the current field to allow for chaining.
      */
-    public F render(SimpleControl<F, Node> newValue) {
+    public F render(SimpleControl<F,?> newValue) {
         renderer = newValue;
         return (F) this;
     }
@@ -639,7 +640,7 @@ public abstract class Field<F extends Field<F>> extends Element<F> implements Fo
      *
      * @return Returns the current field to allow for chaining.
      */
-    public F render(Supplier<SimpleControl<F, ? extends Node>> newValue) {
+    public F render(Supplier<SimpleControl<F,?>> newValue) {
         rendererSupplier = newValue;
         return (F) this;
     }
@@ -804,7 +805,7 @@ public abstract class Field<F extends Field<F>> extends Element<F> implements Fo
         return translationService != null;
     }
 
-    public SimpleControl<F, ? extends Node> getRenderer() {
+    public SimpleControl<F, ?> getRenderer() {
         if (renderer == null) {
             renderer = rendererSupplier.get();
         }

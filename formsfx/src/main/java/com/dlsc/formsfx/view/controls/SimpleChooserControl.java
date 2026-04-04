@@ -58,12 +58,12 @@ public class SimpleChooserControl extends SimpleControl<StringField, StackPane> 
   protected TextField editableField;
   protected TextArea editableArea;
   protected Label readOnlyLabel;
-  protected Label fieldLabel;
-  private Button chooserButton = new Button();
-  private HBox contentBox = new HBox();
-  private String buttonText;
-  private File initialDirectory;
-  private boolean directory;
+
+  final private Button chooserButton = new Button();
+  final private HBox contentBox = new HBox();
+  final private String buttonText;
+  final private File initialDirectory;
+  final private boolean directory;
 
   /**
    * Constructs a SimpleChooserControl of {@link SimpleChooserControl} type, with visibility condition.
@@ -140,11 +140,11 @@ public class SimpleChooserControl extends SimpleControl<StringField, StackPane> 
       if (directory) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setInitialDirectory(currentInitialDirectory);
-        chosen = directoryChooser.showDialog(getNode().getScene().getWindow());
+        chosen = directoryChooser.showDialog(node().getScene().getWindow());
       } else {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(currentInitialDirectory);
-        chosen = fileChooser.showOpenDialog(getNode().getScene().getWindow());
+        chosen = fileChooser.showOpenDialog(node().getScene().getWindow());
       }
 
       if (chosen != null) {

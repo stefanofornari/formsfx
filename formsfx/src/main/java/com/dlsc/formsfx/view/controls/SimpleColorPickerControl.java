@@ -46,8 +46,8 @@ public class SimpleColorPickerControl extends SimpleControl<StringField, StackPa
    * - The colorPicker is the container that displays the node to select a color value.
    */
   protected ColorPicker colorPicker;
-  private Color initialValue;
-  private Label fieldLabel;
+
+  final private Color initialValue;
 
   /**
    * Create a SimpleColorPickerControl with an initial value.

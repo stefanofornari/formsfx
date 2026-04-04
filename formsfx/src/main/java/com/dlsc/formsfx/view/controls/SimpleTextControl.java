@@ -1,6 +1,6 @@
 package com.dlsc.formsfx.view.controls;
 
-/* -
+/*-
  * ========================LICENSE_START=================================
  * FormsFX
  * %%
@@ -21,13 +21,14 @@ package com.dlsc.formsfx.view.controls;
  */
 
 import com.dlsc.formsfx.model.structure.StringField;
-import com.dlsc.formsfx.view.util.VisibilityProperty;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 
 /**
@@ -36,124 +37,134 @@ import javafx.scene.layout.StackPane;
  *
  * @author Rinesch Murugathas
  * @author Sacha Schmid
- * @author François Martin
- * @author Marco Sanfratello
  */
 public class SimpleTextControl extends SimpleControl<StringField, StackPane> {
 
-  /**
-   * - The fieldLabel is the container that displays the label property of
-   * the field.
-   * - The editableField allows users to modify the field's value.
-   * - The readOnlyLabel displays the field's value if it is not editable.
-   */
-  protected TextField editableField;
-  protected TextArea editableArea;
-  protected Label readOnlyLabel;
+    /**
+     * - The fieldLabel is the container that displays the label property of
+     *   the field.
+     * - The editableField allows users to modify the field's value.
+     * - The readOnlyLabel displays the field's value if it is not editable.
+     */
+    protected TextField editableField;
+    protected TextArea editableArea;
+    protected Label readOnlyLabel;
 
-  /**
-   * Constructs a SimpleTextControl of {@link SimpleTextControl} type, with visibility condition.
-   *
-   * @param visibilityProperty property for control visibility of this element
-   *
-   * @return the constructed SimpleTextControl
-   */
-  public static SimpleTextControl of(VisibilityProperty visibilityProperty) {
-    SimpleTextControl simpleTextControl = new SimpleTextControl();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initializeParts() {
+        super.initializeParts();
 
-    simpleTextControl.visibilityProperty = visibilityProperty;
+        getStyleClass().add("simple-text-control");
 
-    return simpleTextControl;
-  }
+        node = new StackPane();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void initializeParts() {
-    super.initializeParts();
+        editableField = new TextField(field.getValue());
+        editableArea = new TextArea(field.getValue());
 
-    setPickOnBounds(true);
-    Tooltip.install(this, tooltip);
-    System.out.println("Hello world!");
-
-    node = new StackPane();
-    node.getStyleClass().add("simple-text-control");
-
-    editableField = new TextField(field.getValue());
-    editableArea = new TextArea(field.getValue());
-
-    readOnlyLabel = new Label(field.getValue());
-    fieldLabel = new Label(field.labelProperty().getValue());
-    editableField.setPromptText(field.placeholderProperty().getValue());
-
-    //readOnlyLabel.setTooltip(tooltip);
-    //editableField.setTooltip(tooltip);
-    //editableArea.setTooltip(tooltip);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void layoutParts() {
-    readOnlyLabel.getStyleClass().add("read-only-label");
-
-    readOnlyLabel.setPrefHeight(26);
-
-    editableArea.getStyleClass().add("simple-textarea");
-    editableArea.setPrefRowCount(5);
-    editableArea.setPrefHeight(80);
-    editableArea.setWrapText(true);
-
-    if (field.isMultiline()) {
-      node.setPrefHeight(80);
-      readOnlyLabel.setPrefHeight(80);
+        readOnlyLabel = new Label(field.getValue());
+        fieldLabel = new Label(field.labelProperty().getValue());
+        editableField.setPromptText(field.placeholderProperty().getValue());
     }
 
-    node.getChildren().addAll(editableField, editableArea, readOnlyLabel);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void layoutParts() {
+        super.layoutParts();
 
-    node.setAlignment(Pos.CENTER_LEFT);
-  }
+        readOnlyLabel.getStyleClass().add("read-only-label");
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupBindings() {
-    super.setupBindings();
+        readOnlyLabel.setPrefHeight(26);
 
-    editableArea.visibleProperty().bind(Bindings.and(field.editableProperty(),
-        field.multilineProperty()));
-    editableField.visibleProperty().bind(Bindings.and(field.editableProperty(),
-        field.multilineProperty().not()));
-    readOnlyLabel.visibleProperty().bind(field.editableProperty().not());
+        editableArea.getStyleClass().add("simple-textarea");
+        editableArea.setPrefRowCount(5);
+        editableArea.setPrefHeight(80);
+        editableArea.setWrapText(true);
 
-    editableField.textProperty().bindBidirectional(field.userInputProperty());
-    editableArea.textProperty().bindBidirectional(field.userInputProperty());
-    readOnlyLabel.textProperty().bind(field.userInputProperty());
-    editableField.promptTextProperty().bind(field.placeholderProperty());
-    editableArea.promptTextProperty().bind(field.placeholderProperty());
+        if (field.isMultiline()) {
+            node.setPrefHeight(80);
+            readOnlyLabel.setPrefHeight(80);
+        }
 
-    editableArea.managedProperty().bind(editableArea.visibleProperty());
-    editableField.managedProperty().bind(editableField.visibleProperty());
-  }
+        node.getChildren().addAll(editableField, editableArea, readOnlyLabel);
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupValueChangedListeners() {
-    super.setupValueChangedListeners();
+        node.setAlignment(Pos.CENTER_LEFT);
 
-    field.multilineProperty().addListener((observable, oldValue, newValue) -> {
-      node.setPrefHeight(newValue ? 80 : 0);
-      readOnlyLabel.setPrefHeight(newValue ? 80 : 26);
-    });
+        Node labelDescription = field.getLabelDescription();
+        Node valueDescription = field.getValueDescription();
 
-    field.errorMessagesProperty().addListener((observable, oldValue, newValue) ->
-        toggleTooltip(field.isMultiline() ? editableArea : editableField)
-    );
-  }
+        int columns = field.getSpan();
+
+        if (columns < 3) {
+            int rowIndex = 0;
+            add(fieldLabel, 0, rowIndex++, columns, 1);
+            if (labelDescription != null) {
+                GridPane.setValignment(labelDescription, VPos.TOP);
+                add(labelDescription, 0, rowIndex++, columns, 1);
+            }
+            add(node, 0, rowIndex++, columns, 1);
+            if (valueDescription != null) {
+                GridPane.setValignment(valueDescription, VPos.TOP);
+                add(valueDescription, 0, rowIndex, columns, 1);
+            }
+        } else {
+            add(fieldLabel, 0, 0, 2, 1);
+            if (labelDescription != null) {
+                GridPane.setValignment(labelDescription, VPos.TOP);
+                add(labelDescription, 0, 1, 2, 1);
+            }
+            add(node, 2, 0, columns - 2, 1);
+            if (valueDescription != null) {
+                GridPane.setValignment(valueDescription, VPos.TOP);
+                add(valueDescription, 2, 1, columns - 2, 1);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupBindings() {
+        super.setupBindings();
+
+        editableArea.visibleProperty().bind(Bindings.and(field.editableProperty(),
+                                                        field.multilineProperty()));
+        editableField.visibleProperty().bind(Bindings.and(field.editableProperty(),
+                                                        field.multilineProperty().not()));
+        readOnlyLabel.visibleProperty().bind(field.editableProperty().not());
+
+        editableField.textProperty().bindBidirectional(field.userInputProperty());
+        editableArea.textProperty().bindBidirectional(field.userInputProperty());
+        readOnlyLabel.textProperty().bind(field.userInputProperty());
+        fieldLabel.textProperty().bind(field.labelProperty());
+        editableField.promptTextProperty().bind(field.placeholderProperty());
+        editableArea.promptTextProperty().bind(field.placeholderProperty());
+
+        editableArea.managedProperty().bind(editableArea.visibleProperty());
+        editableField.managedProperty().bind(editableField.visibleProperty());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupValueChangedListeners() {
+        super.setupValueChangedListeners();
+
+        field.multilineProperty().addListener((observable, oldValue, newValue) -> {
+            node.setPrefHeight(newValue ? 80 : 0);
+            readOnlyLabel.setPrefHeight(newValue ? 80 : 26);
+        });
+
+        field.errorMessagesProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(field.isMultiline() ? editableArea : editableField));
+
+        editableField.focusedProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(editableField));
+        editableArea.focusedProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(editableArea));
+    }
 
 }

@@ -21,7 +21,6 @@ package com.dlsc.formsfx.view.controls;
  */
 
 import com.dlsc.formsfx.model.structure.PasswordField;
-import com.dlsc.formsfx.view.util.VisibilityProperty;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.geometry.Pos;
@@ -40,36 +39,17 @@ import javafx.scene.layout.StackPane;
  * @author Andres Almiray
  */
 public class SimplePasswordControl extends SimpleControl<PasswordField, StackPane> {
-
     /**
-     * - The fieldLabel is the container that displays the label property of
-     *   the field.
      * - The editableField allows users to modify the field's value.
      * - The readOnlyLabel displays the field's value if it is not editable.
      */
     protected javafx.scene.control.PasswordField editableField;
     protected Label readOnlyLabel;
-    protected Label fieldLabel;
 
     /*
      * Translates characters found in user input into '*'
      */
     protected StringBinding obfuscatedUserInputBinding;
-
-    /**
-     * Constructs a SimplePasswordControl of {@link SimplePasswordControl} type, with visibility condition.
-     *
-     * @param visibilityProperty property for control visibility of this element
-     *
-     * @return the constructed SimplePasswordControl
-     */
-    public static SimplePasswordControl of(VisibilityProperty visibilityProperty) {
-        SimplePasswordControl simplePasswordControl = new SimplePasswordControl();
-
-        simplePasswordControl.visibilityProperty = visibilityProperty;
-
-        return simplePasswordControl;
-    }
 
     /**
      * {@inheritDoc}
@@ -80,7 +60,7 @@ public class SimplePasswordControl extends SimpleControl<PasswordField, StackPan
 
         getStyleClass().add("simple-password-control");
 
-        this.node = new StackPane();
+        node = new StackPane();
 
         editableField = new javafx.scene.control.PasswordField();
         editableField.setText(field.getValue());
@@ -95,13 +75,15 @@ public class SimplePasswordControl extends SimpleControl<PasswordField, StackPan
      */
     @Override
     public void layoutParts() {
+        super.layoutParts();
+
         readOnlyLabel.getStyleClass().add("read-only-label");
 
         readOnlyLabel.setPrefHeight(26);
 
-        this.node.getChildren().addAll(editableField, readOnlyLabel);
+        node.getChildren().addAll(editableField, readOnlyLabel);
 
-        this.node.setAlignment(Pos.CENTER_LEFT);
+        node.setAlignment(Pos.CENTER_LEFT);
 
         Node labelDescription = field.getLabelDescription();
         Node valueDescription = field.getValueDescription();
@@ -115,7 +97,7 @@ public class SimplePasswordControl extends SimpleControl<PasswordField, StackPan
                 GridPane.setValignment(labelDescription, VPos.TOP);
                 add(labelDescription, 0, rowIndex++, columns, 1);
             }
-            add(this.node, 0, rowIndex++, columns, 1);
+            add(node, 0, rowIndex++, columns, 1);
             if (valueDescription != null) {
                 GridPane.setValignment(valueDescription, VPos.TOP);
                 add(valueDescription, 0, rowIndex, columns, 1);
@@ -126,7 +108,7 @@ public class SimplePasswordControl extends SimpleControl<PasswordField, StackPan
                 GridPane.setValignment(labelDescription, VPos.TOP);
                 add(labelDescription, 0, 1, 2, 1);
             }
-            add(this.node, 2, 0, columns - 2, 1);
+            add(node, 2, 0, columns - 2, 1);
             if (valueDescription != null) {
                 GridPane.setValignment(valueDescription, VPos.TOP);
                 add(valueDescription, 2, 1, columns - 2, 1);

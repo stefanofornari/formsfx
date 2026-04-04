@@ -38,16 +38,14 @@ import javafx.scene.layout.Priority;
 public class IntegerSliderControl extends SimpleControl<IntegerField, HBox> {
   public static final int VALUE_LABEL_PADDING = 25;
   /**
-   * - fieldLabel is the container that displays the label property of the
-   * field.
    * - slider is the control to change the value.
-   * - container holds the control so that it can be styled properly.
    */
-  protected Label fieldLabel;
+
   protected Slider slider;
   protected Label valueLabel;
-  private int min;
-  private int max;
+
+  final private int min;
+  final private int max;
 
   /**
    * Constructs a IntegerSliderControl of {@link IntegerSliderControl} type, with visibility condition.

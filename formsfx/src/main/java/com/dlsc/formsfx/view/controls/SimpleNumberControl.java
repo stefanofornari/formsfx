@@ -1,6 +1,6 @@
 package com.dlsc.formsfx.view.controls;
 
-/* -
+/*-
  * ========================LICENSE_START=================================
  * FormsFX
  * %%
@@ -22,99 +22,125 @@ package com.dlsc.formsfx.view.controls;
 
 import com.dlsc.formsfx.model.structure.DataField;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 
 /**
  * This class provides the base implementation for a simple control to edit
- * numerical fields.
+ * numerical elements.
  *
  * @author Rinesch Murugathas
  * @author Sacha Schmid
- * @author François Martin
- * @author Marco Sanfratello
  */
-public abstract class SimpleNumberControl<F extends DataField, D extends Number>
-    extends SimpleControl<F, StackPane> {
+public abstract class SimpleNumberControl<F extends DataField, D extends Number> extends SimpleControl<F, StackPane> {
+    /**
+     * - The editableSpinner is a Spinner for setting numerical values.
+     * - The readOnlyLabel is the label to put over editableSpinner.
+     */
+    protected Spinner<D> editableSpinner;
+    protected Label readOnlyLabel;
 
-  /**
-   * - The fieldLabel is the container that displays the label property of
-   * the field.
-   * - The editableSpinner is a Spinner for setting numerical values.
-   * - The readOnlyLabel is the label to put over editableSpinner.
-   */
-  protected Label fieldLabel;
-  protected Spinner<D> editableSpinner;
-  protected Label readOnlyLabel;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initializeParts() {
+        super.initializeParts();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void initializeParts() {
-    super.initializeParts();
+        node = new StackPane();
 
-    node = new StackPane();
+        fieldLabel = new Label();
+        readOnlyLabel = new Label();
+        editableSpinner = new Spinner<>();
+        editableSpinner.setEditable(true);
+    }
 
-    fieldLabel = new Label();
-    readOnlyLabel = new Label();
-    editableSpinner = new Spinner<>();
-    editableSpinner.setEditable(true);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void layoutParts() {
+        super.layoutParts();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void layoutParts() {
-    readOnlyLabel.getStyleClass().add("read-only-label");
-    node.getChildren().addAll(editableSpinner, readOnlyLabel);
-    node.setAlignment(Pos.CENTER_LEFT);
+        readOnlyLabel.getStyleClass().add("read-only-label");
+        node.getChildren().addAll(editableSpinner, readOnlyLabel);
+        node.setAlignment(Pos.CENTER_LEFT);
 
-    editableSpinner.setMaxWidth(Double.MAX_VALUE);
-  }
+        editableSpinner.setMaxWidth(Double.MAX_VALUE);
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupBindings() {
-    super.setupBindings();
+        Node labelDescription = field.getLabelDescription();
+        Node valueDescription = field.getValueDescription();
 
-    editableSpinner.visibleProperty().bind(field.editableProperty());
-    readOnlyLabel.visibleProperty().bind(field.editableProperty().not());
+        int columns = field.getSpan();
 
-    editableSpinner.getEditor().textProperty().bindBidirectional(field.userInputProperty());
-    readOnlyLabel.textProperty().bind(field.userInputProperty());
-  }
+        if (columns < 3) {
+            int rowIndex = 0;
+            add(fieldLabel, 0, rowIndex++, columns, 1);
+            if (labelDescription != null) {
+                GridPane.setValignment(labelDescription, VPos.TOP);
+                add(labelDescription, 0, rowIndex++, columns, 1);
+            }
+            add(node, 0, rowIndex++, columns, 1);
+            if (valueDescription != null) {
+                GridPane.setValignment(valueDescription, VPos.TOP);
+                add(valueDescription, 0, rowIndex, columns, 1);
+            }
+        } else {
+            add(fieldLabel, 0, 0, 2, 1);
+            if (labelDescription != null) {
+                GridPane.setValignment(labelDescription, VPos.TOP);
+                add(labelDescription, 0, 1, 2, 1);
+            }
+            add(node, 2, 0, columns - 2, 1);
+            if (valueDescription != null) {
+                GridPane.setValignment(valueDescription, VPos.TOP);
+                add(valueDescription, 2, 1, columns - 2, 1);
+            }
+        }
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupEventHandlers() {
-    editableSpinner.getEditor().setOnKeyPressed(event -> {
-      switch (event.getCode()) {
-        case UP:
-          editableSpinner.increment(1);
-          break;
-        case DOWN:
-          editableSpinner.decrement(1);
-          break;
-        default:
-      }
-    });
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupBindings() {
+        super.setupBindings();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupValueChangedListeners() {
-    super.setupValueChangedListeners();
-    editableSpinner.focusedProperty().addListener(
-        (observable, oldValue, newValue) -> toggleTooltip(editableSpinner)
-    );
-  }
+        editableSpinner.visibleProperty().bind(field.editableProperty());
+        readOnlyLabel.visibleProperty().bind(field.editableProperty().not());
+
+        editableSpinner.getEditor().textProperty().bindBidirectional(field.userInputProperty());
+        readOnlyLabel.textProperty().bind(field.userInputProperty());
+        fieldLabel.textProperty().bind(field.labelProperty());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupEventHandlers() {
+        editableSpinner.getEditor().setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case UP:
+                    editableSpinner.increment(1);
+                    break;
+                case DOWN:
+                    editableSpinner.decrement(1);
+                    break;
+            }
+        });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupValueChangedListeners() {
+        super.setupValueChangedListeners();
+        editableSpinner.focusedProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(editableSpinner));
+    }
 }

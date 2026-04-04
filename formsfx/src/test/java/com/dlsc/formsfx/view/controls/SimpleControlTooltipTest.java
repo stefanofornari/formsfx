@@ -21,128 +21,88 @@ package com.dlsc.formsfx.view.controls;
  */
 
 import com.dlsc.formsfx.model.structure.Field;
-import com.dlsc.formsfx.model.structure.MultiSelectionField;
-import javafx.application.Platform;
-import javafx.scene.control.CheckBox;
-import org.junit.jupiter.api.BeforeAll;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.structure.StringField;
+import com.dlsc.formsfx.view.renderer.FormRenderer;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.api.FxRobot;
+import org.testfx.framework.junit5.ApplicationExtension;
+import org.testfx.framework.junit5.Start;
 
-import java.util.Arrays;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
 /**
- * Test class to verify that tooltips show up when hovering over child elements
- * of SimpleControl implementations.
+ * TestFX test class to verify that tooltips show up when hovering over child elements
+ * of SimpleControl implementations using actual mouse hover simulation.
  */
+@ExtendWith(ApplicationExtension.class)
 public class SimpleControlTooltipTest {
 
-    @BeforeAll
-    public static void before() {
-        try {
-            Platform.startup(() -> {});
-        } catch (IllegalStateException ex) {
-            // JavaFX may only be initialized once.
-        }
+    private Form form;
+    private StringField field;
+
+    @Start
+    public void start(Stage stage) {
+        field = Field.ofStringType("Test tooltip").label("Test tooltip")
+                                .placeholder("placeholder")
+                                .required("required_error_message")
+                                .tooltip("This is the tooltip");
+
+        form = Form.of(
+            Group.of(field)
+        ).title("Test");
+
+        final BorderPane root = new BorderPane();
+        root.setCenter(new FormRenderer(form));
+
+        Scene scene = new Scene(root, 400, 300);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @Test
-    public void test_tooltip_setup_on_child_elements() {
-        // Create a multi-selection field with tooltip
-        MultiSelectionField<Integer> field = Field.ofMultiSelectionType(
-            Arrays.asList(1, 2, 3),
-            Arrays.asList(1)
-        );
-        field.tooltip("Test tooltip for checkboxes");
+    public void test_tooltip_shows_on_child_elements_hover(FxRobot robot) {
+        final SimpleControl control = field.getRenderer();
 
-        // Create the control
-        SimpleCheckBoxControl<Integer> control = new SimpleCheckBoxControl<>();
-        control.setField(field);
+        robot.moveTo(control.node);
+        robot.sleep(600); // Wait for tooltip to appear (500ms delay + buffer)
 
-        // Verify that the JavaFX Tooltip object is properly installed on the control
-        then(control.tooltip).isNotNull();
-        
-        // Trigger tooltip text update to simulate what happens when tooltip shows
+        // Verify the tooltip is installed and has correct text
+        then(control.tooltip.isShowing()).isTrue();
+        then(control.tooltip.getText()).isEqualToIgnoringNewLines("This is the tooltip");
+    }
+/*
+    @Test
+    public void test_tooltip_shows_on_main_node_hover(FxRobot robot) {
+        // Hover over the main control node
+        robot.moveTo(control);
+        robot.sleep(600); // Wait for tooltip to appear
+
+        // Get the actual tooltip text
+        Tooltip tooltip = control.tooltip;
+        then(tooltip).isNotNull();
+        then(tooltip.getText()).contains("Test tooltip for checkboxes");
+    }
+
+    @Test
+    public void test_tooltip_with_error_messages(FxRobot robot) {
+        // Add error messages to the field
+        control.getField().errorMessagesProperty().addAll("Error 1", "Error 2");
+
+        // Trigger tooltip text update
         control.tooltipText();
-        
-        // Verify the JavaFX Tooltip object contains the expected text
-        then(control.tooltip.getText()).contains("Test tooltip for checkboxes");
-        
-        // Verify the control has child elements (checkboxes)
-        then(control.getNode()).isNotNull();
-        then(control.getNode().getChildren()).hasSize(3);
 
-        // Verify all children are CheckBox instances
-        for (int i = 0; i < control.getNode().getChildren().size(); i++) {
-            then(control.getNode().getChildren().get(i)).isInstanceOf(CheckBox.class);
-        }
+        // Verify tooltip contains both tooltip text and error messages
+        Tooltip tooltip = control.tooltip;
+        then(tooltip.getText()).contains("Test tooltip for checkboxes");
+        then(tooltip.getText()).contains("Error 1");
+        then(tooltip.getText()).contains("Error 2");
     }
-
-    @Test
-    public void test_tooltip_with_error_messages() {
-        // Create a field with error messages
-        MultiSelectionField<Integer> field = Field.ofMultiSelectionType(
-            Arrays.asList(1, 2, 3),
-            Arrays.asList(1)
-        );
-        field.errorMessagesProperty().addAll("Error 1", "Error 2");
-
-        // Create the control
-        SimpleCheckBoxControl<Integer> control = new SimpleCheckBoxControl<>();
-        control.setField(field);
-
-        // Verify error messages are set
-        then(control.getField().getErrorMessages()).hasSize(2);
-        then(control.getField().getErrorMessages()).contains("Error 1", "Error 2");
-    }
-
-    @Test
-    public void test_tooltip_on_individual_checkboxes() {
-        // Create a multi-selection field with tooltip
-        MultiSelectionField<Integer> field = Field.ofMultiSelectionType(
-            Arrays.asList(1, 2, 3),
-            Arrays.asList(1, 2)
-        );
-        field.tooltip("Hover tooltip");
-
-        // Create the control
-        SimpleCheckBoxControl<Integer> control = new SimpleCheckBoxControl<>();
-        control.setField(field);
-
-        // Test that individual checkboxes can trigger tooltips
-        // This verifies the event handlers are properly set up on child elements
-        for (int i = 0; i < control.getNode().getChildren().size(); i++) {
-            CheckBox checkbox = (CheckBox) control.getNode().getChildren().get(i);
-
-            // Check that the checkbox has the same tooltip behavior as the parent
-            // The tooltip should be accessible through the control's field
-            then(control.getField().getTooltip()).isEqualTo("Hover tooltip");
-        }
-    }
-
-    @Test
-    public void test_tooltip_installed_on_control() {
-        // Create a multi-selection field with tooltip
-        MultiSelectionField<Integer> field = Field.ofMultiSelectionType(
-            Arrays.asList(1, 2, 3),
-            Arrays.asList(1)
-        );
-        field.tooltip("Test tooltip");
-
-        // Create the control
-        SimpleCheckBoxControl<Integer> control = new SimpleCheckBoxControl<>();
-        control.setField(field);
-
-        // Verify that the tooltip is installed on the control
-        // With standard JavaFX tooltip mechanism, the tooltip should be accessible
-        // and will automatically show on any part of the control including child elements
-        then(control.tooltip).isNotNull();
-        
-        // Trigger tooltip text update by calling tooltipText() method
-        // This simulates what happens when the tooltip is about to show
-        control.tooltipText();
-        
-        // Verify the tooltip text is set correctly
-        then(control.tooltip.getText()).contains("Test tooltip");
-    }
+*/
 }

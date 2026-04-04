@@ -48,9 +48,9 @@ public class DoubleSliderControl extends SimpleControl<DoubleField, HBox> {
    */
   protected Slider slider;
   protected Label valueLabel;
-  private double min;
-  private double max;
-  private int precision;
+  final private double min;
+  final private double max;
+  final private int precision;
 
   /**
    * Constructs a DoubleSliderControl of {@link DoubleSliderControl} type, with visibility condition.

@@ -9,9 +9,9 @@ package com.dlsc.formsfx.model.structure;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *        http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  * @author Rinesch Murugathas
  */
 public abstract class DataField<P extends Property, V, F extends Field<F>> extends Field<F> {
-
+  
     /**
      * Every field tracks its value in multiple ways.
      *
@@ -68,6 +68,14 @@ public abstract class DataField<P extends Property, V, F extends Field<F>> exten
      * the ones that correspond to the field's type.
      */
     protected final List<Validator<V>> validators = new ArrayList<>();
+
+    /**
+     * The value transformer is responsible for transforming the user input
+     * string to the specific type of the field's value.
+     * @deprecated Use DataField#stringConverter instead.
+     */
+    @Deprecated
+    ValueTransformer<V> valueTransformer;
 
     protected StringConverter<V> stringConverter = new AbstractStringConverter<V>() {
         @Override
@@ -194,6 +202,51 @@ public abstract class DataField<P extends Property, V, F extends Field<F>> exten
     }
 
     /**
+     * Sets the value transformer for the current field.
+     *
+     * @param newValue
+     *              The value transformer that parses the user input string to
+     *              the field's underlying value.
+     *
+     * @return Returns the current field to allow for chaining.
+     * @deprecated Use format(StringConverter) instead
+     */
+    @Deprecated
+    public F format(ValueTransformer<V> newValue) {
+        stringConverter = new StringConverterAdapter<>(newValue);
+        validate();
+        return (F) this;
+    }
+
+    /**
+     * Applies a new value transformer that converts the entered string input
+     * to a concrete value.
+     *
+     * @param newValue
+     *              The new value transformer. Takes a string as an input and
+     *              returns the concrete type.
+     * @param errorMessage
+     *              The error message to display if the transformation was
+     *              unsuccessful.
+     *
+     * @return Returns the current field to allow for chaining.
+     * @deprecated Use format(StringConverter, errorMessage) instead
+     */
+    @Deprecated
+    public F format(ValueTransformer<V> newValue, String errorMessage) {
+        stringConverter = new StringConverterAdapter<>(newValue);
+
+        if (isI18N()) {
+            formatErrorKey.set(errorMessage);
+        } else {
+            formatError.set(errorMessage);
+        }
+
+        validate();
+        return (F) this;
+    }
+
+    /**
      * Adds an error message to handle formatting errors with the default
      * value transformers.
      *
@@ -243,7 +296,7 @@ public abstract class DataField<P extends Property, V, F extends Field<F>> exten
      * @return Returns the current field to allow for chaining.
      */
     public F bind(P binding) {
-        value.bindBidirectional(binding);
+        persistentValue.bindBidirectional(binding);
         binding.addListener(externalBindingListener);
 
         return (F) this;
@@ -258,7 +311,7 @@ public abstract class DataField<P extends Property, V, F extends Field<F>> exten
      * @return Returns the current field to allow for chaining.
      */
     public F unbind(P binding) {
-        value.unbindBidirectional(binding);
+        persistentValue.unbindBidirectional(binding);
         binding.removeListener(externalBindingListener);
 
         return (F) this;
@@ -267,7 +320,6 @@ public abstract class DataField<P extends Property, V, F extends Field<F>> exten
     /**
      * {@inheritDoc}
      */
-    @Override
     public void setBindingMode(BindingMode newValue) {
         if (BindingMode.CONTINUOUS.equals(newValue)) {
             value.addListener(bindingModeListener);
@@ -280,7 +332,6 @@ public abstract class DataField<P extends Property, V, F extends Field<F>> exten
      * Stores the field's current value in its persistent value. This stores
      * the user's changes in the model.
      */
-    @Override
     public void persist() {
         if (!isValid()) {
             return;
@@ -295,7 +346,6 @@ public abstract class DataField<P extends Property, V, F extends Field<F>> exten
      * Sets the field's current value to its persistent value, thus resetting
      * any changes made by the user.
      */
-    @Override
     public void reset() {
         if (!hasChanged()) {
             return;

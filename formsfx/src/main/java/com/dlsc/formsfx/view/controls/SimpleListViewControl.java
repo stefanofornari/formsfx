@@ -1,6 +1,6 @@
 package com.dlsc.formsfx.view.controls;
 
-/* -
+/*-
  * ========================LICENSE_START=================================
  * FormsFX
  * %%
@@ -21,11 +21,13 @@ package com.dlsc.formsfx.view.controls;
  */
 
 import com.dlsc.formsfx.model.structure.MultiSelectionField;
-import com.dlsc.formsfx.view.util.VisibilityProperty;
 import javafx.collections.ListChangeListener;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.layout.GridPane;
 
 /**
  * This class provides the base implementation for a simple control to edit
@@ -33,138 +35,132 @@ import javafx.scene.control.SelectionMode;
  *
  * @author Sacha Schmid
  * @author Rinesch Murugathas
- * @author François Martin
- * @author Marco Sanfratello
  */
-public class SimpleListViewControl<V>
-    extends SimpleControl<MultiSelectionField<V>, ListView<String>> {
+public class SimpleListViewControl<V> extends SimpleControl<MultiSelectionField<V>, ListView<String>> {
+    /**
+     * The flag used for setting the selection properly.
+     */
+    protected boolean preventUpdate;
 
-  /**
-   * - The fieldLabel is the container that displays the label property of
-   * the field.
-   * - The node is the container that displays list values.
-   */
-  protected Label fieldLabel;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initializeParts() {
+        super.initializeParts();
 
-  /**
-   * The flag used for setting the selection properly.
-   */
-  protected boolean preventUpdate;
+        node = new ListView<>();
 
-  /**
-   * Constructs a SimpleListViewControl of {@link SimpleListViewControl} type, with visibility condition.
-   *
-   * @param visibilityProperty property for control visibility of this element
-   *
-   * @return the constructed SimpleListViewControl
-   */
-  public static SimpleListViewControl of(VisibilityProperty visibilityProperty) {
-    SimpleListViewControl simpleListViewControl = new SimpleListViewControl();
+        getStyleClass().add("simple-listview-control");
 
-    simpleListViewControl.visibilityProperty = visibilityProperty;
+        fieldLabel = new Label(field.labelProperty().getValue());
 
-    return simpleListViewControl;
-  }
+        node.setItems(field.getItems());
+        node.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void initializeParts() {
-    super.initializeParts();
-
-    node = new ListView<>();
-    node.getStyleClass().add("simple-listview-control");
-
-    fieldLabel = new Label(field.labelProperty().getValue());
-
-    node.setItems(field.getItems());
-    node.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
-    for (int i = 0; i < field.getItems().size(); i++) {
-      if (field.getSelection().contains(field.getItems().get(i))) {
-        node.getSelectionModel().select(i);
-      } else {
-        node.getSelectionModel().clearSelection(i);
-      }
+        for (int i = 0; i < field.getItems().size(); i++) {
+            if (field.getSelection().contains(field.getItems().get(i))) {
+                node.getSelectionModel().select(i);
+            } else {
+                node.getSelectionModel().clearSelection(i);
+            }
+        }
     }
-  }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void layoutParts() {
-    node.setPrefHeight(200);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void layoutParts() {
+        super.layoutParts();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupBindings() {
-    super.setupBindings();
-  }
+        int columns = field.getSpan();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupValueChangedListeners() {
-    super.setupValueChangedListeners();
+        node.setPrefHeight(200);
 
-    field.itemsProperty().addListener(
-        (observable, oldValue, newValue) -> node.setItems(field.getItems())
-    );
+        Node labelDescription = field.getLabelDescription();
+        Node valueDescription = field.getValueDescription();
 
-    field.selectionProperty().addListener((observable, oldValue, newValue) -> {
-      if (preventUpdate) {
-        return;
-      }
-
-      preventUpdate = true;
-
-      for (int i = 0; i < field.getItems().size(); i++) {
-        if (field.getSelection().contains(field.getItems().get(i))) {
-          node.getSelectionModel().select(i);
-        } else {
-          node.getSelectionModel().clearSelection(i);
+        add(fieldLabel, 0, 0, 2, 1);
+        if (labelDescription != null) {
+            GridPane.setValignment(labelDescription, VPos.TOP);
+            add(labelDescription, 0, 1, 2, 1);
         }
-      }
-
-      preventUpdate = false;
-    });
-
-    field.errorMessagesProperty().addListener(
-        (observable, oldValue, newValue) -> toggleTooltip(node)
-    );
-    field.tooltipProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(node));
-    node.focusedProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(node));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupEventHandlers() {
-    node.getSelectionModel().getSelectedIndices().addListener((ListChangeListener<Integer>) c -> {
-      if (preventUpdate) {
-        return;
-      }
-
-      preventUpdate = true;
-
-      for (int i = 0; i < node.getItems().size(); i++) {
-        if (node.getSelectionModel().getSelectedIndices().contains(i)) {
-          field.select(i);
-        } else {
-          field.deselect(i);
+        add(node, 2, 0, columns - 2, 1);
+        if (valueDescription != null) {
+            GridPane.setValignment(valueDescription, VPos.TOP);
+            add(valueDescription, 2, 1, columns - 2, 1);
         }
-      }
+    }
 
-      preventUpdate = false;
-    });
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupBindings() {
+        super.setupBindings();
+
+        fieldLabel.textProperty().bind(field.labelProperty());
+        node.disableProperty().bind(field.editableProperty().not());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupValueChangedListeners() {
+        super.setupValueChangedListeners();
+
+        field.itemsProperty().addListener((observable, oldValue, newValue) -> node.setItems(field.getItems()));
+
+        field.selectionProperty().addListener((observable, oldValue, newValue) -> {
+            if (preventUpdate) {
+                return;
+            }
+
+            preventUpdate = true;
+
+            for (int i = 0; i < field.getItems().size(); i++) {
+                if (field.getSelection().contains(field.getItems().get(i))) {
+                    node.getSelectionModel().select(i);
+                } else {
+                    node.getSelectionModel().clearSelection(i);
+                }
+            }
+
+            preventUpdate = false;
+        });
+
+        field.errorMessagesProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(node));
+        field.tooltipProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(node));
+        node.focusedProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(node));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupEventHandlers() {
+        node.setOnMouseEntered(event -> toggleTooltip(node));
+        node.setOnMouseExited(event -> toggleTooltip(node));
+
+        node.getSelectionModel().getSelectedIndices().addListener((ListChangeListener<Integer>) c -> {
+            if (preventUpdate) {
+                return;
+            }
+
+            preventUpdate = true;
+
+            for (int i = 0; i < node.getItems().size(); i++) {
+                if (node.getSelectionModel().getSelectedIndices().contains(i)) {
+                    field.select(i);
+                } else {
+                    field.deselect(i);
+                }
+            }
+
+            preventUpdate = false;
+        });
+    }
 
 }

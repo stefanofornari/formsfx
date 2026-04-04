@@ -1,6 +1,6 @@
 package com.dlsc.formsfx.view.controls;
 
-/* -
+/*-
  * ========================LICENSE_START=================================
  * FormsFX
  * %%
@@ -21,8 +21,12 @@ package com.dlsc.formsfx.view.controls;
  */
 
 import com.dlsc.formsfx.model.structure.BooleanField;
-import com.dlsc.formsfx.view.util.VisibilityProperty;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 /**
  * This class provides the base implementation for a simple control to edit
@@ -30,79 +34,88 @@ import javafx.scene.control.CheckBox;
  *
  * @author Rinesch Murugathas
  * @author Sacha Schmid
- * @author François Martin
- * @author Marco Sanfratello
  */
-public class SimpleBooleanControl extends SimpleControl<BooleanField, CheckBox> {
+public class SimpleBooleanControl extends SimpleControl<BooleanField, VBox> {
 
-  /**
-   * Constructs a SimpleBooleanControl of {@link SimpleBooleanControl} type, with visibility condition.
-   *
-   * @param visibilityProperty - property for control visibility of this element
-   *
-   * @return the constructed SimpleBooleanControl
-   */
-  public static SimpleBooleanControl of(VisibilityProperty visibilityProperty) {
-    SimpleBooleanControl simpleBooleanControl = new SimpleBooleanControl();
+    /**
+     * checkBox is the editable checkbox to set user input.
+     */
+    protected CheckBox checkBox;
 
-    simpleBooleanControl.visibilityProperty = visibilityProperty;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initializeParts() {
+        super.initializeParts();
 
-    return simpleBooleanControl;
-  }
+        getStyleClass().add("simple-boolean-control");
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void initializeParts() {
-    super.initializeParts();
+        fieldLabel = new Label(field.labelProperty().getValue());
+        checkBox = new CheckBox();
+        node = new VBox();
+        checkBox.setSelected(field.getValue());
+    }
 
-    node = new CheckBox();
-    node.getStyleClass().add("simple-boolean-control");
-    node.setSelected(field.getValue());
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void layoutParts() {
+        super.layoutParts();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void layoutParts() {
-  }
+        int columns = field.getSpan();
+        node.getChildren().add(checkBox);
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupBindings() {
-    super.setupBindings();
-  }
+        Node labelDescription = field.getLabelDescription();
+        Node valueDescription = field.getValueDescription();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupValueChangedListeners() {
-    super.setupValueChangedListeners();
-    field.userInputProperty().addListener((observable, oldValue, newValue) ->
-        node.setSelected(Boolean.parseBoolean(field.getUserInput()))
-    );
+        add(fieldLabel, 0, 0, 2, 1);
+        if (labelDescription != null) {
+            GridPane.setValignment(labelDescription, VPos.TOP);
+            add(labelDescription, 0, 1, 2, 1);
+        }
+        add(node, 2, 0, columns - 2, 1);
+        if (valueDescription != null) {
+            GridPane.setValignment(valueDescription, VPos.TOP);
+            add(valueDescription, 2, 1, columns - 2, 1);
+        }
+    }
 
-    field.errorMessagesProperty().addListener(
-        (observable, oldValue, newValue) -> toggleTooltip(node)
-    );
-    field.tooltipProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(node));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupBindings() {
+        super.setupBindings();
 
-    node.focusedProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(node));
-  }
+        checkBox.disableProperty().bind(field.editableProperty().not());
+        fieldLabel.textProperty().bind(field.labelProperty());
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setupEventHandlers() {
-    node.selectedProperty().addListener((observable, oldValue, newValue) ->
-        field.userInputProperty().setValue(String.valueOf(newValue))
-    );
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupValueChangedListeners() {
+        super.setupValueChangedListeners();
+        field.userInputProperty().addListener((observable, oldValue, newValue) -> checkBox.setSelected(Boolean.parseBoolean(field.getUserInput())));
+
+        field.errorMessagesProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(checkBox));
+        field.tooltipProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(checkBox));
+
+        checkBox.focusedProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(checkBox));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setupEventHandlers() {
+        setOnMouseEntered(event -> toggleTooltip(checkBox));
+        setOnMouseExited(event -> toggleTooltip(checkBox));
+
+        checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> field.userInputProperty().setValue(String.valueOf(newValue)));
+    }
 
 }

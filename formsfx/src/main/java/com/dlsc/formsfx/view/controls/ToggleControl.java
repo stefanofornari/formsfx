@@ -33,13 +33,6 @@ import org.controlsfx.control.ToggleSwitch;
  */
 public class ToggleControl extends SimpleControl<BooleanField, ToggleSwitch> {
   public static final double NEGATIVE_LABEL_INSETS = -17.3;
-  /**
-   * - fieldLabel is the container that displays the label property of the
-   * field.
-   * - toggleSwitch is the toggle switch to set user input.
-   * - container holds the toggle so that it can be styled properly.
-   */
-  private Label fieldLabel;
 
   /**
    * Constructs a ToggleControl of {@link ToggleControl} type, with visibility condition.

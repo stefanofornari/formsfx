@@ -35,7 +35,6 @@ import javafx.scene.layout.StackPane;
  * @author Tomasz Krzemiński
  */
 public class SimpleDateControl extends SimpleControl<DateField, StackPane> {
-
     protected DatePicker picker;
     protected Label readOnlyLabel;
 
@@ -45,6 +44,7 @@ public class SimpleDateControl extends SimpleControl<DateField, StackPane> {
 
         node = new StackPane();
 
+        fieldLabel = new Label();
         readOnlyLabel = new Label();
         picker = new DatePicker();
         picker.setEditable(true);
