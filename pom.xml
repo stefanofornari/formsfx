@@ -6,7 +6,7 @@
     <groupId>com.github.stefanofornari</groupId>
     <artifactId>formsfxparent</artifactId>
     <packaging>pom</packaging>
-    <version>26.0.1</version>
+    <version>26.0.2-SNAPSHOT</version>
     <url>https://github.com/stefanofornari/formsfx</url>
     <description>
         FormsFX - Create forms with ease and creates well-designed and
@@ -140,7 +140,7 @@
     <scm>
         <connection>scm:git:git@github.com:stefanofornari/formsfx.git</connection>
         <url>https://github.com/stefanofornari/formsfx</url>
-        <tag>formsfxparent-26.0.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
