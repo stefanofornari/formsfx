@@ -22,16 +22,18 @@ package com.dlsc.formsfx.view.controls;
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.view.util.ViewMixin;
 import com.dlsc.formsfx.view.util.VisibilityProperty;
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.css.PseudoClass;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 
 /**
  * This class provides a base for general purpose FormsFX controls.
@@ -93,6 +95,10 @@ public abstract class SimpleControl<F extends Field, N extends Node>
 
         tooltip = new Tooltip();
         tooltip.getStyleClass().add("simple-tooltip");
+        tooltip.setShowDelay(Duration.millis(500));
+        tooltip.setOnShowing(event -> {
+            tooltipText();
+        });
 
         getStyleClass().addAll(field.getStyleClass());
 
@@ -128,10 +134,8 @@ public abstract class SimpleControl<F extends Field, N extends Node>
     public void setupBindings() {
         idProperty().bind(field.idProperty());
 
-        // TODO
-        // node.idProperty().bind(field.idProperty());
-        // node.disableProperty().bind(field.editableProperty().not());
-        // fieldLabel.textProperty().bind(field.labelProperty());
+        node.disableProperty().bind(field.editableProperty().not());
+        fieldLabel.textProperty().bind(field.labelProperty());
 
         if (this.visibilityProperty != null) {
             this.node.visibleProperty().bind(this.visibilityProperty.get());
@@ -139,6 +143,20 @@ public abstract class SimpleControl<F extends Field, N extends Node>
 
             this.fieldLabel().visibleProperty().bind(this.visibilityProperty.get());
             this.fieldLabel().managedProperty().bind(this.visibilityProperty.get());
+        }
+
+        //
+        // Attach the tooltip to control's  nodes
+        //
+        fieldLabel.setTooltip(tooltip);
+        if (node != null) {
+            if (node instanceof Parent) {
+                ((Parent)node).getChildrenUnmodifiable().forEach(n -> {
+                    if (n instanceof Control) {
+                        ((Control)n).setTooltip(tooltip);
+                    }
+                });
+            }
         }
     }
 
@@ -165,6 +183,17 @@ public abstract class SimpleControl<F extends Field, N extends Node>
         });
     }
 
+    protected void tooltipText() {
+        final String fieldTooltip = field.getTooltip();
+
+        if (!fieldTooltip.isBlank() || !field.getErrorMessages().isEmpty()) {
+            tooltip.setText(((!fieldTooltip.isBlank()) ? fieldTooltip + "\n" : "")
+                + String.join("\n", field.getErrorMessages()));
+        } else {
+            Platform.runLater(() -> tooltip.hide());
+        }
+    }
+
     /**
      * Sets the error message as tooltip for the matching control and shows them
      * below the same control.
@@ -172,7 +201,7 @@ public abstract class SimpleControl<F extends Field, N extends Node>
      * @param reference The control which gets the tooltip.
      */
     protected void toggleTooltip(Node reference) {
-        this.toggleTooltip(reference, (Control) reference);
+        //this.toggleTooltip(reference, (Control) reference);
     }
 
     /**
@@ -182,6 +211,7 @@ public abstract class SimpleControl<F extends Field, N extends Node>
      * @param reference The control which gets the tooltip.
      */
     protected void toggleTooltip(Node reference, Control below) {
+        /*
         String fieldTooltip = field.getTooltip();
 
         if ((reference.isFocused() || reference.isHover()) && (!fieldTooltip.equals("") || field.getErrorMessages().size() > 0)) {
@@ -201,6 +231,7 @@ public abstract class SimpleControl<F extends Field, N extends Node>
         } else {
             tooltip.hide();
         }
+        */
     }
 
     /**

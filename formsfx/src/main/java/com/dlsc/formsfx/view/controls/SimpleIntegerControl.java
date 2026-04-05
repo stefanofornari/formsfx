@@ -9,9 +9,9 @@ package com.dlsc.formsfx.view.controls;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,6 +31,13 @@ import javafx.scene.control.SpinnerValueFactory;
  */
 public class SimpleIntegerControl extends SimpleNumberControl<IntegerField, Integer> {
 
+    public SimpleIntegerControl() {
+        super();
+
+        getStyleClass().add("simple-integer-control");
+        node.getStyleClass().add("simple-integer-control");
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -38,7 +45,6 @@ public class SimpleIntegerControl extends SimpleNumberControl<IntegerField, Inte
     public void initializeParts() {
         super.initializeParts();
 
-        getStyleClass().addAll("simple-integer-control");
         editableSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, field.getValue()));
     }
 

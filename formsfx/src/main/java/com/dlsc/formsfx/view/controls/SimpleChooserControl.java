@@ -95,6 +95,11 @@ public class SimpleChooserControl extends SimpleControl<StringField, StackPane> 
   public SimpleChooserControl(String buttonText,
                               File initialDirectory,
                               boolean directory) {
+
+    getStyleClass().add("simple-chooser-control");
+    node = new StackPane();
+    node.getStyleClass().add("simple-chooser-control");
+
     this.buttonText = buttonText;
     this.initialDirectory = initialDirectory;
     this.directory = directory;
@@ -106,9 +111,6 @@ public class SimpleChooserControl extends SimpleControl<StringField, StackPane> 
   @Override
   public void initializeParts() {
     super.initializeParts();
-
-    node = new StackPane();
-    node.getStyleClass().add("simple-text-control");
 
     editableField = new TextField(field.getValue());
     editableArea = new TextArea(field.getValue());

@@ -38,11 +38,16 @@ public class SimpleDateControl extends SimpleControl<DateField, StackPane> {
     protected DatePicker picker;
     protected Label readOnlyLabel;
 
+    public SimpleDateControl() {
+        getStyleClass().add("simple-date-control");
+
+        node = new StackPane();
+        node.getStyleClass().add("simple-date-control");
+    }
+
     @Override
     public void initializeParts() {
         super.initializeParts();
-
-        node = new StackPane();
 
         fieldLabel = new Label();
         readOnlyLabel = new Label();

@@ -28,7 +28,7 @@
                         -Dmonocle.platform.headless.width=1024
                         -Dmonocle.platform.headless.height=768
                         -Dprism.order=sw
-                        -Dtestfx.headless=true
+                        -Dtestfx.headless=false
                         -Dtestfx.robot=glass
                         --add-exports=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
                         --add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED

@@ -45,6 +45,13 @@ public class SimpleCheckBoxControl<V> extends SimpleControl<MultiSelectionField<
      */
     protected final List<CheckBox> checkboxes = new ArrayList<>();
 
+    public SimpleCheckBoxControl() {
+        getStyleClass().add("simple-checkbox-control");
+        
+        node = new VBox();
+        node.getStyleClass().add("simple-checkbox-control");
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -52,10 +59,7 @@ public class SimpleCheckBoxControl<V> extends SimpleControl<MultiSelectionField<
     public void initializeParts() {
         super.initializeParts();
 
-        getStyleClass().add("simple-checkbox-control");
-
         fieldLabel = new Label(field.labelProperty().getValue());
-        node = new VBox();
 
         createCheckboxes();
     }

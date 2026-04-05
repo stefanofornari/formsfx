@@ -57,6 +57,11 @@ public class SimpleColorPickerControl extends SimpleControl<StringField, StackPa
   public SimpleColorPickerControl(Color initialValue) {
     Objects.requireNonNull(initialValue);
     this.initialValue = initialValue;
+
+    getStyleClass().add("simple-color-picker-control");
+    
+    node = new StackPane();
+    node.getStyleClass().add("simple-color-picker-control");
   }
 
   /**
@@ -80,9 +85,6 @@ public class SimpleColorPickerControl extends SimpleControl<StringField, StackPa
   @Override
   public void initializeParts() {
     super.initializeParts();
-
-    node = new StackPane();
-    node.getStyleClass().add("simple-text-control");
 
     colorPicker = new ColorPicker(initialValue);
     colorPicker.setMaxWidth(Double.MAX_VALUE);

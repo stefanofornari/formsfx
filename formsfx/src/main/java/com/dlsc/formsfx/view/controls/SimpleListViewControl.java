@@ -42,16 +42,18 @@ public class SimpleListViewControl<V> extends SimpleControl<MultiSelectionField<
      */
     protected boolean preventUpdate;
 
+    public SimpleListViewControl() {
+        getStyleClass().add("simple-listview-control");
+        node = new ListView<>();
+        node.getStyleClass().add("simple-listview-control");
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void initializeParts() {
         super.initializeParts();
-
-        node = new ListView<>();
-
-        getStyleClass().add("simple-listview-control");
 
         fieldLabel = new Label(field.labelProperty().getValue());
 

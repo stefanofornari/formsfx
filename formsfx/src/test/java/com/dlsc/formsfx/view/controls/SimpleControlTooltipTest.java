@@ -25,6 +25,7 @@ import com.dlsc.formsfx.model.structure.Form;
 import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.structure.StringField;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
+import java.util.concurrent.TimeUnit;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -34,7 +35,7 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
-
+import static org.testfx.util.WaitForAsyncUtils.waitFor;
 import static org.assertj.core.api.BDDAssertions.then;
 
 /**
@@ -67,42 +68,46 @@ public class SimpleControlTooltipTest {
     }
 
     @Test
-    public void test_tooltip_shows_on_child_elements_hover(FxRobot robot) {
+    public void test_tooltip_shows_on_child_elements_hover(FxRobot robot) throws Exception {
         final SimpleControl control = field.getRenderer();
 
-        robot.moveTo(control.node);
-        robot.sleep(600); // Wait for tooltip to appear (500ms delay + buffer)
+        robot.moveTo(".text-input");
+        waitFor(10, TimeUnit.SECONDS, () ->
+            control.tooltip.isShowing()
+        );
 
-        // Verify the tooltip is installed and has correct text
+        then(control.tooltip.isShowing()).isTrue();
+        then(control.tooltip.getText()).isEqualToIgnoringNewLines("This is the tooltip");
+
+        robot.interact(() -> control.tooltip.hide());
+
+        robot.moveTo(".label");
+        waitFor(10, TimeUnit.SECONDS, () ->
+            control.tooltip.isShowing()
+        );
+
         then(control.tooltip.isShowing()).isTrue();
         then(control.tooltip.getText()).isEqualToIgnoringNewLines("This is the tooltip");
     }
-/*
-    @Test
-    public void test_tooltip_shows_on_main_node_hover(FxRobot robot) {
-        // Hover over the main control node
-        robot.moveTo(control);
-        robot.sleep(600); // Wait for tooltip to appear
-
-        // Get the actual tooltip text
-        Tooltip tooltip = control.tooltip;
-        then(tooltip).isNotNull();
-        then(tooltip.getText()).contains("Test tooltip for checkboxes");
-    }
 
     @Test
-    public void test_tooltip_with_error_messages(FxRobot robot) {
+    public void test_tooltip_with_error_messages(FxRobot robot) throws Exception {
+        final SimpleControl control = field.getRenderer();
+
         // Add error messages to the field
-        control.getField().errorMessagesProperty().addAll("Error 1", "Error 2");
+        field.errorMessagesProperty().addAll("Error 1", "Error 2");
 
         // Trigger tooltip text update
-        control.tooltipText();
+        robot.moveTo(".text-input");
+        waitFor(10, TimeUnit.SECONDS, () ->
+            control.tooltip.isShowing()
+        );
 
         // Verify tooltip contains both tooltip text and error messages
-        Tooltip tooltip = control.tooltip;
-        then(tooltip.getText()).contains("Test tooltip for checkboxes");
-        then(tooltip.getText()).contains("Error 1");
-        then(tooltip.getText()).contains("Error 2");
+        then(control.tooltip.isShowing()).isTrue();
+        then(control.tooltip.getText())
+            .contains("This is the tooltip")
+            .contains("Error 1")
+            .contains("Error 2");
     }
-*/
 }

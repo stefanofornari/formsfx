@@ -44,14 +44,16 @@ public abstract class SimpleNumberControl<F extends DataField, D extends Number>
     protected Spinner<D> editableSpinner;
     protected Label readOnlyLabel;
 
+    public SimpleNumberControl() {
+        node = new StackPane();
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void initializeParts() {
         super.initializeParts();
-
-        node = new StackPane();
 
         fieldLabel = new Label();
         readOnlyLabel = new Label();

@@ -50,16 +50,19 @@ public class SimpleTextControl extends SimpleControl<StringField, StackPane> {
     protected TextArea editableArea;
     protected Label readOnlyLabel;
 
+    public SimpleTextControl() {
+        getStyleClass().add("simple-text-control");
+
+        node = new StackPane();
+        node.getStyleClass().add("simple-text-control");
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void initializeParts() {
         super.initializeParts();
-
-        getStyleClass().add("simple-text-control");
-
-        node = new StackPane();
 
         editableField = new TextField(field.getValue());
         editableArea = new TextArea(field.getValue());
@@ -160,11 +163,6 @@ public class SimpleTextControl extends SimpleControl<StringField, StackPane> {
             node.setPrefHeight(newValue ? 80 : 0);
             readOnlyLabel.setPrefHeight(newValue ? 80 : 26);
         });
-
-        field.errorMessagesProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(field.isMultiline() ? editableArea : editableField));
-
-        editableField.focusedProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(editableField));
-        editableArea.focusedProperty().addListener((observable, oldValue, newValue) -> toggleTooltip(editableArea));
     }
 
 }

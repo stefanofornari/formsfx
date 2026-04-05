@@ -23,7 +23,6 @@ package com.dlsc.formsfx.view.controls;
 import com.dlsc.formsfx.model.structure.SingleSelectionField;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
@@ -45,9 +44,15 @@ public class SimpleRadioButtonControl<V> extends SimpleControl<SingleSelectionFi
      * - The radioButtons is the list of radio buttons to display.
      * - The toggleGroup defines the group for the radio buttons.
      */
-    protected Label fieldLabel;
     protected final List<RadioButton> radioButtons = new ArrayList<>();
     protected ToggleGroup toggleGroup;
+
+    public SimpleRadioButtonControl() {
+        getStyleClass().add("simple-radio-control");
+
+        node = new VBox();
+        node.getStyleClass().add("simple-radio-control");
+    }
 
     /**
      * {@inheritDoc}
@@ -56,11 +61,7 @@ public class SimpleRadioButtonControl<V> extends SimpleControl<SingleSelectionFi
     public void initializeParts() {
         super.initializeParts();
 
-        getStyleClass().add("simple-radio-control");
-
-        fieldLabel = new Label(field.labelProperty().getValue());
         toggleGroup = new ToggleGroup();
-        node = new VBox();
 
         createRadioButtons();
     }

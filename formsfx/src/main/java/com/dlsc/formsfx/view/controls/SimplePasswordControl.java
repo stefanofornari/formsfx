@@ -51,16 +51,19 @@ public class SimplePasswordControl extends SimpleControl<PasswordField, StackPan
      */
     protected StringBinding obfuscatedUserInputBinding;
 
+    public SimplePasswordControl() {
+        getStyleClass().add("simple-password-control");
+
+        node = new StackPane();
+        node.getStyleClass().add("simple-password-control");
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void initializeParts() {
         super.initializeParts();
-
-        getStyleClass().add("simple-password-control");
-
-        node = new StackPane();
 
         editableField = new javafx.scene.control.PasswordField();
         editableField.setText(field.getValue());
