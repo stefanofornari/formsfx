@@ -96,9 +96,12 @@ public abstract class SimpleControl<F extends Field, N extends Node>
         tooltip = new Tooltip();
         tooltip.getStyleClass().add("simple-tooltip");
         tooltip.setShowDelay(Duration.millis(500));
+
         tooltip.setOnShowing(event -> {
             tooltipText();
         });
+        tooltip.setMaxWidth(300);
+        tooltip.setWrapText(true);
 
         getStyleClass().addAll(field.getStyleClass());
 

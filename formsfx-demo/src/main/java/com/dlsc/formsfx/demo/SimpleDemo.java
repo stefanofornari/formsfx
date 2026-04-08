@@ -25,7 +25,11 @@ public class SimpleDemo extends Application {
                     .label("A simple text field")
                     .placeholder("placeholder")
                     .required("This field is required")
-                    .tooltip("This is a simple text field")
+                    .tooltip(
+                        "This is a simple text field with long tooltip, " +
+                        "which is repeated twice: " +
+                        "this is a simple text field with long tooltip."
+                    )
             )
         ).title("Simple Demo");
 
