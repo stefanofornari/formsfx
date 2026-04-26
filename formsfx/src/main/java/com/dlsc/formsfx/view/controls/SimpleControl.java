@@ -19,6 +19,7 @@ package com.dlsc.formsfx.view.controls;
  * limitations under the License.
  * =========================LICENSE_END==================================
  */
+import com.dlsc.formsfx.view.util.FieldTooltip;
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.view.util.ViewMixin;
 import com.dlsc.formsfx.view.util.VisibilityProperty;
@@ -33,7 +34,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.util.Duration;
 
 /**
  * This class provides a base for general purpose FormsFX controls.
@@ -93,15 +93,11 @@ public abstract class SimpleControl<F extends Field, N extends Node>
     public void initializeParts() {
         getStyleClass().add("simple-control");
 
-        tooltip = new Tooltip();
-        tooltip.getStyleClass().add("simple-tooltip");
-        tooltip.setShowDelay(Duration.millis(500));
-
+        tooltip = new FieldTooltip();
+        
         tooltip.setOnShowing(event -> {
             tooltipText();
         });
-        tooltip.setMaxWidth(300);
-        tooltip.setWrapText(true);
 
         getStyleClass().addAll(field.getStyleClass());
 
@@ -149,7 +145,7 @@ public abstract class SimpleControl<F extends Field, N extends Node>
         }
 
         //
-        // Attach the tooltip to control's  nodes
+        // Attach the tooltip to control's nodes
         //
         fieldLabel.setTooltip(tooltip);
         if (node != null) {
