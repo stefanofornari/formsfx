@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * FormsFX
  * %%
- * Copyright (C) 2017 - 2018 DLSC Software & Consulting
+ * Copyright (C) 2017 DLSC Software & Consulting
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,27 @@
  * limitations under the License.
  * =========================LICENSE_END==================================
  */
-module com.dlsc.formsfx {
+package com.dlsc.formsfx.view.util;
 
-    requires java.logging;
-    requires javafx.controls;
-    requires org.controlsfx.controls;
+import javafx.scene.control.Tooltip;
+import javafx.util.Duration;
 
-    exports com.dlsc.formsfx.model.event;
-    exports com.dlsc.formsfx.model.structure;
-    exports com.dlsc.formsfx.model.util;
-    exports com.dlsc.formsfx.model.validators;
 
-    exports com.dlsc.formsfx.view.controls;
-    exports com.dlsc.formsfx.view.renderer;
-    exports com.dlsc.formsfx.view.util;
+/**
+ *
+ */
+public class FieldTooltip extends Tooltip {
 
-    opens com.dlsc.formsfx.view.renderer;
+    public FieldTooltip(final String tooltip) {
+        super(tooltip);
+        getStyleClass().add("simple-tooltip");
+        setShowDelay(Duration.millis(500));
+        setMaxWidth(300);
+        setWrapText(true);
+    }
+
+    public FieldTooltip() {
+        this(null);
+    }
+
 }
