@@ -47,7 +47,20 @@ public class SimpleRadioButtonControl<V> extends SimpleControl<SingleSelectionFi
     protected final List<RadioButton> radioButtons = new ArrayList<>();
     protected ToggleGroup toggleGroup;
 
+    /**
+     * Creates a new SimpleRadioButtonControl with the default label span of 2.
+     */
     public SimpleRadioButtonControl() {
+        this(2);
+    }
+
+    /**
+     * Creates a new SimpleRadioButtonControl with the specified label span.
+     *
+     * @param labelSpan the number of columns the label should span
+     */
+    public SimpleRadioButtonControl(int labelSpan) {
+        super(labelSpan);
         getStyleClass().add("simple-radio-control");
 
         node = new VBox();
@@ -80,15 +93,29 @@ public class SimpleRadioButtonControl<V> extends SimpleControl<SingleSelectionFi
         Node labelDescription = field.getLabelDescription();
         Node valueDescription = field.getValueDescription();
 
-        add(fieldLabel, 0, 0, 2, 1);
-        if (labelDescription != null) {
-            GridPane.setValignment(labelDescription, VPos.TOP);
-            add(labelDescription, 0, 1, 2, 1);
-        }
-        add(node, 2, 0, columns - 2, 1);
-        if (valueDescription != null) {
-            GridPane.setValignment(valueDescription, VPos.TOP);
-            add(valueDescription, 2, 1, columns - 2, 1);
+        if (columns < 3) {
+            int rowIndex = 0;
+            add(fieldLabel, 0, rowIndex++, columns, 1);
+            if (labelDescription != null) {
+                GridPane.setValignment(labelDescription, VPos.TOP);
+                add(labelDescription, 0, rowIndex++, columns, 1);
+            }
+            add(node, 0, rowIndex++, columns, 1);
+            if (valueDescription != null) {
+                GridPane.setValignment(valueDescription, VPos.TOP);
+                add(valueDescription, 0, rowIndex, columns, 1);
+            }
+        } else {
+            add(fieldLabel, 0, 0, labelSpan, 1);
+            if (labelDescription != null) {
+                GridPane.setValignment(labelDescription, VPos.TOP);
+                add(labelDescription, 0, 1, labelSpan, 1);
+            }
+            add(node, labelSpan, 0, columns - labelSpan, 1);
+            if (valueDescription != null) {
+                GridPane.setValignment(valueDescription, VPos.TOP);
+                add(valueDescription, labelSpan, 1, columns - labelSpan, 1);
+            }
         }
     }
 
@@ -118,9 +145,14 @@ public class SimpleRadioButtonControl<V> extends SimpleControl<SingleSelectionFi
 
         field.selectionProperty().addListener((observable, oldValue, newValue) -> {
             if (field.getSelection() != null) {
-                radioButtons.get(field.getItems().indexOf(field.getSelection())).setSelected(true);
+                int idx = field.getItems().indexOf(field.getSelection());
+                if (idx >= 0 && idx < radioButtons.size()) {
+                    radioButtons.get(idx).setSelected(true);
+                } else {
+                    toggleGroup.selectToggle(null);
+                }
             } else {
-                toggleGroup.getSelectedToggle().setSelected(false);
+                toggleGroup.selectToggle(null);
             }
         });
 
@@ -156,7 +188,13 @@ public class SimpleRadioButtonControl<V> extends SimpleControl<SingleSelectionFi
         }
 
         if (field.getSelection() != null) {
-            radioButtons.get(field.getItems().indexOf(field.getSelection())).setSelected(true);
+            int idx = field.getItems().indexOf(field.getSelection());
+            if (idx >= 0 && idx < radioButtons.size()) {
+                radioButtons.get(idx).setSelected(true);
+            } else {
+                // Ensure no toggle is selected if selection is invalid
+                toggleGroup.selectToggle(null);
+            }
         }
 
         node.getChildren().addAll(radioButtons);

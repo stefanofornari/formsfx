@@ -33,6 +33,8 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 /**
  * This class provides an implementation of a {@link SelectionField} allowing
@@ -49,6 +51,9 @@ public class SingleSelectionField<V> extends SelectionField<V, SingleSelectionFi
      */
     protected final ObjectProperty<V> persistentSelection = new SimpleObjectProperty<>();
     protected final ObjectProperty<V> selection = new SimpleObjectProperty<>();
+
+    // When true the underlying control allows typing arbitrary text (editable editor). Default false.
+    protected final BooleanProperty freeText = new SimpleBooleanProperty(false);
 
     /**
      * Every field contains a list of validators. The validators are limited to
@@ -97,6 +102,25 @@ public class SingleSelectionField<V> extends SelectionField<V, SingleSelectionFi
         });
 
         rendererSupplier = () -> new SimpleComboBoxControl<>();
+
+    }
+
+    /**
+     * Enable or disable free text entry in the underlying control's editor.
+     * @param newValue whether free text is allowed
+     * @return this
+     */
+    public SingleSelectionField<V> freeText(boolean newValue) {
+        freeText.set(newValue);
+        return this;
+    }
+
+    public BooleanProperty freeTextProperty() {
+        return freeText;
+    }
+
+    public boolean isFreeText() {
+        return freeText.get();
     }
 
     /**

@@ -9,9 +9,9 @@ package com.dlsc.formsfx.model.structure;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  * @author Rinesch Murugathas
  */
 public abstract class DataField<P extends Property, V, F extends Field<F>> extends Field<F> {
-  
+
     /**
      * Every field tracks its value in multiple ways.
      *
@@ -68,14 +68,6 @@ public abstract class DataField<P extends Property, V, F extends Field<F>> exten
      * the ones that correspond to the field's type.
      */
     protected final List<Validator<V>> validators = new ArrayList<>();
-
-    /**
-     * The value transformer is responsible for transforming the user input
-     * string to the specific type of the field's value.
-     * @deprecated Use DataField#stringConverter instead.
-     */
-    @Deprecated
-    ValueTransformer<V> valueTransformer;
 
     protected StringConverter<V> stringConverter = new AbstractStringConverter<V>() {
         @Override
