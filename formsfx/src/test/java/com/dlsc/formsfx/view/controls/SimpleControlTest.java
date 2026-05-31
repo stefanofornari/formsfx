@@ -1,5 +1,3 @@
-package com.dlsc.formsfx.view.controls;
-
 /*-
  * ========================LICENSE_START=================================
  * FormsFX
@@ -19,6 +17,7 @@ package com.dlsc.formsfx.view.controls;
  * limitations under the License.
  * =========================LICENSE_END==================================
  */
+package com.dlsc.formsfx.view.controls;
 
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.MultiSelectionField;
@@ -32,7 +31,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -99,7 +97,6 @@ public class SimpleControlTest {
         then(((ComboBox) ((StackPane) cmb.node()).getChildren().get(0)).getSelectionModel().isSelected(3)).isTrue();
     }
 
-    @Disabled
     public void styleTest() {
         StringField s = Field.ofStringType("test").styleClass("test");
         SimpleTextControl t = new SimpleTextControl();

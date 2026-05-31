@@ -38,7 +38,6 @@ import javafx.scene.control.Labeled;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -105,11 +104,10 @@ public abstract class Field<F extends Field<F>> extends Element<F> implements Fo
     protected final BooleanProperty changed = new SimpleBooleanProperty(false);
 
     /**
-     * Fields can be styled using CSS through ID or class hooks.
+     * The labelSpan determines how many columns the label should span in the
+     * control's grid layout.
      */
-    protected final StringProperty id = new SimpleStringProperty(UUID.randomUUID().toString());
-    protected final ListProperty<String> styleClass = new SimpleListProperty<>(FXCollections.observableArrayList());
-    protected final IntegerProperty span = new SimpleIntegerProperty(12);
+    protected final IntegerProperty labelSpan = new SimpleIntegerProperty(-1);
 
     /**
      * The results of the field's validation is stored in this property. After
@@ -619,6 +617,19 @@ public abstract class Field<F extends Field<F>> extends Element<F> implements Fo
     }
 
     /**
+     * Sets the label span property of the current field.
+     *
+     * @param newValue
+     *              The new value for the label span property.
+     *
+     * @return Returns the current field to allow for chaining.
+     */
+    public F labelSpan(int newValue) {
+        labelSpan.set(newValue);
+        return (F) this;
+    }
+
+    /**
      * Sets the control that renders this field.
      *
      * @param newValue
@@ -799,6 +810,14 @@ public abstract class Field<F extends Field<F>> extends Element<F> implements Fo
 
     public BooleanProperty editableProperty() {
         return editable;
+    }
+
+    public int getLabelSpan() {
+        return labelSpan.get();
+    }
+
+    public IntegerProperty labelSpanProperty() {
+        return labelSpan;
     }
 
     public boolean isI18N() {

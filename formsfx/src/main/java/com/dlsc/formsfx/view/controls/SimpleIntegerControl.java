@@ -32,7 +32,16 @@ import javafx.scene.control.SpinnerValueFactory;
 public class SimpleIntegerControl extends SimpleNumberControl<IntegerField, Integer> {
 
     public SimpleIntegerControl() {
-        super();
+        this(2);
+    }
+
+    /**
+     * Creates a new SimpleIntegerControl with the specified label span.
+     *
+     * @param labelSpan the number of columns the label should span
+     */
+    public SimpleIntegerControl(int labelSpan) {
+        super(labelSpan);
 
         getStyleClass().add("simple-integer-control");
         node.getStyleClass().add("simple-integer-control");

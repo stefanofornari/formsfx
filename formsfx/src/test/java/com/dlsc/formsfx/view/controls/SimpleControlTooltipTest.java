@@ -21,19 +21,14 @@ package com.dlsc.formsfx.view.controls;
  */
 
 import com.dlsc.formsfx.model.structure.Field;
-import com.dlsc.formsfx.model.structure.Form;
-import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.structure.StringField;
-import com.dlsc.formsfx.view.renderer.FormRenderer;
 import java.util.concurrent.TimeUnit;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Test;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
+import javafx.stage.Stage;
 
 import static org.testfx.util.WaitForAsyncUtils.waitFor;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -43,28 +38,23 @@ import static org.assertj.core.api.BDDAssertions.then;
  * of SimpleControl implementations using actual mouse hover simulation.
  */
 @ExtendWith(ApplicationExtension.class)
-public class SimpleControlTooltipTest {
+public class SimpleControlTooltipTest extends AbstractFxTest {
 
-    private Form form;
     private StringField field;
 
     @Start
     public void start(Stage stage) {
+        super.start(stage);
+    }
+
+    @Override
+    protected void init(Stage stage, javafx.scene.layout.BorderPane root) {
         field = Field.ofStringType("Test tooltip").label("Test tooltip")
                                 .placeholder("placeholder")
                                 .required("required_error_message")
                                 .tooltip("This is the tooltip");
 
-        form = Form.of(
-            Group.of(field)
-        ).title("Test");
-
-        final BorderPane root = new BorderPane();
-        root.setCenter(new FormRenderer(form));
-
-        Scene scene = new Scene(root, 400, 300);
-        stage.setScene(scene);
-        stage.show();
+        createForm(field);
     }
 
     @Test

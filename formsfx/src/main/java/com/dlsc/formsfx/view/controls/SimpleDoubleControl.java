@@ -32,7 +32,16 @@ import javafx.scene.control.SpinnerValueFactory;
 public class SimpleDoubleControl extends SimpleNumberControl<DoubleField, Double> {
 
     public SimpleDoubleControl() {
-        super();
+        this(2);
+    }
+
+    /**
+     * Creates a new SimpleDoubleControl with the specified label span.
+     *
+     * @param labelSpan the number of columns the label should span
+     */
+    public SimpleDoubleControl(int labelSpan) {
+        super(labelSpan);
 
         getStyleClass().add("simple-double-control");
         node.getStyleClass().add("simple-double-control");

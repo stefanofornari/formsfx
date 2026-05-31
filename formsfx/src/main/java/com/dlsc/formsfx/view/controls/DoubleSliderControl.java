@@ -27,8 +27,11 @@ import java.math.RoundingMode;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
@@ -78,7 +81,19 @@ public class DoubleSliderControl extends SimpleControl<DoubleField, HBox> {
    * @param precision number of digits after the decimal point
    */
   public DoubleSliderControl(double min, double max, int precision) {
-    super();
+    this(min, max, precision, 2);
+  }
+
+  /**
+   * Creates a slider for double values with a minimum and maximum value, with a set precision.
+   *
+   * @param min       minimum slider value
+   * @param max       maximum slider value
+   * @param precision number of digits after the decimal point
+   * @param labelSpan the number of columns the label should span
+   */
+  public DoubleSliderControl(double min, double max, int precision, int labelSpan) {
+    super(labelSpan);
 
     getStyleClass().add("double-slider-control");
 
@@ -112,14 +127,17 @@ public class DoubleSliderControl extends SimpleControl<DoubleField, HBox> {
 
     fieldLabel = new Label(field.labelProperty().getValue());
 
-    valueLabel = new Label(String.valueOf(field.getValue().doubleValue()));
 
+    valueLabel = new Label(String.valueOf(field.getValue().doubleValue()));
+    valueLabel.getStyleClass().add("double-slider-control");
+    
     slider = new Slider();
     slider.setMin(min);
     slider.setMax(max);
     slider.setShowTickLabels(false);
     slider.setShowTickMarks(false);
     slider.setValue(field.getValue());
+    slider.getStyleClass().add("double-slider-control");
   }
 
   /**
@@ -127,12 +145,44 @@ public class DoubleSliderControl extends SimpleControl<DoubleField, HBox> {
    */
   @Override
   public void layoutParts() {
+    super.layoutParts();
+
     node.getChildren().addAll(slider, valueLabel);
     HBox.setHgrow(slider, Priority.ALWAYS);
     valueLabel.setAlignment(Pos.CENTER);
     valueLabel.setMinWidth(VALUE_LABEL_PADDING);
     node.setSpacing(VALUE_LABEL_PADDING);
     HBox.setMargin(valueLabel, new Insets(0, VALUE_LABEL_PADDING, 0, 0));
+
+    int columns = field.getSpan();
+
+    Node labelDescription = field.getLabelDescription();
+    Node valueDescription = field.getValueDescription();
+
+    if (columns < 3) {
+      int rowIndex = 0;
+      add(fieldLabel, 0, rowIndex++, columns, 1);
+      if (labelDescription != null) {
+        GridPane.setValignment(labelDescription, VPos.TOP);
+        add(labelDescription, 0, rowIndex++, columns, 1);
+      }
+      add(node, 0, rowIndex++, columns, 1);
+      if (valueDescription != null) {
+        GridPane.setValignment(valueDescription, VPos.TOP);
+        add(valueDescription, 0, rowIndex, columns, 1);
+      }
+    } else {
+      add(fieldLabel, 0, 0, labelSpan, 1);
+      if (labelDescription != null) {
+        GridPane.setValignment(labelDescription, VPos.TOP);
+        add(labelDescription, 0, 1, labelSpan, 1);
+      }
+      add(node, labelSpan, 0, columns - labelSpan, 1);
+      if (valueDescription != null) {
+        GridPane.setValignment(valueDescription, VPos.TOP);
+        add(valueDescription, labelSpan, 1, columns - labelSpan, 1);
+      }
+    }
   }
 
   /**

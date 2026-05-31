@@ -70,6 +70,11 @@ public abstract class SimpleControl<F extends Field, N extends Node>
     protected Tooltip tooltip;
 
     /**
+     * The number of columns the label should span in the grid.
+     */
+    protected int labelSpan = 2;
+
+    /**
      * Pseudo classes for state changes.
      */
     protected static final PseudoClass REQUIRED_CLASS = PseudoClass.getPseudoClass("required");
@@ -77,12 +82,53 @@ public abstract class SimpleControl<F extends Field, N extends Node>
     protected static final PseudoClass CHANGED_CLASS = PseudoClass.getPseudoClass("changed");
     protected static final PseudoClass DISABLED_CLASS = PseudoClass.getPseudoClass("disabled");
 
+    /**
+     * Creates a new SimpleControl with the default label span of 2.
+     */
+    public SimpleControl() {
+        this(2);
+    }
+
+    /**
+     * Creates a new SimpleControl with the specified label span.
+     *
+     * @param labelSpan the number of columns the label should span
+     */
+    public SimpleControl(int labelSpan) {
+        this.labelSpan = labelSpan;
+    }
+
+    /**
+     * Gets the number of columns the label should span.
+     *
+     * @return the label span
+     */
+    public int labelSpan() {
+        return labelSpan;
+    }
+
+    /**
+     * Sets the number of columns the label should span.
+     *
+     * @param labelSpan the number of columns the label should span
+     */
+    public void labelSpan(int labelSpan) {
+        this.labelSpan = labelSpan;
+    }
+
     public void setField(F field) {
         if (this.field != null) {
             throw new IllegalStateException("Cannot change a control's field once set.");
         }
 
         this.field = field;
+
+        if (field.getLabelSpan() != -1) {
+            this.labelSpan = field.getLabelSpan();
+        } else {
+            field.labelSpan(this.labelSpan);
+        }
+
         init();
     }
 
@@ -94,7 +140,7 @@ public abstract class SimpleControl<F extends Field, N extends Node>
         getStyleClass().add("simple-control");
 
         tooltip = new FieldTooltip();
-        
+
         tooltip.setOnShowing(event -> {
             tooltipText();
         });

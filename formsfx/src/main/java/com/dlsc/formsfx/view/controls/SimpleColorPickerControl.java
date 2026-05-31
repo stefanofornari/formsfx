@@ -23,8 +23,11 @@ package com.dlsc.formsfx.view.controls;
 import java.util.Objects;
 
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
@@ -55,11 +58,22 @@ public class SimpleColorPickerControl extends SimpleControl<StringField, StackPa
    * @param initialValue The initial color, cannot be null.
    */
   public SimpleColorPickerControl(Color initialValue) {
+    this(initialValue, 2);
+  }
+
+  /**
+   * Create a SimpleColorPickerControl with an initial value and label span.
+   *
+   * @param initialValue The initial color, cannot be null.
+   * @param labelSpan    the number of columns the label should span
+   */
+  public SimpleColorPickerControl(Color initialValue, int labelSpan) {
+    super(labelSpan);
     Objects.requireNonNull(initialValue);
     this.initialValue = initialValue;
 
     getStyleClass().add("simple-color-picker-control");
-    
+
     node = new StackPane();
     node.getStyleClass().add("simple-color-picker-control");
   }
@@ -67,6 +81,7 @@ public class SimpleColorPickerControl extends SimpleControl<StringField, StackPa
   /**
    * Constructs a SimpleColorPickerControl of {@link SimpleColorPickerControl} type, with visibility condition.
    *
+   * @param initialValue The initial color, cannot be null.
    * @param visibilityProperty property for control visibility of this element
    *
    * @return the constructed SimpleColorPickerControl
@@ -102,8 +117,40 @@ public class SimpleColorPickerControl extends SimpleControl<StringField, StackPa
    */
   @Override
   public void layoutParts() {
+    super.layoutParts();
+
     node.getChildren().addAll(colorPicker);
     node.setAlignment(Pos.CENTER_LEFT);
+
+    Node labelDescription = field.getLabelDescription();
+    Node valueDescription = field.getValueDescription();
+
+    int columns = field.getSpan();
+
+    if (columns < 3) {
+      int rowIndex = 0;
+      add(fieldLabel, 0, rowIndex++, columns, 1);
+      if (labelDescription != null) {
+        GridPane.setValignment(labelDescription, VPos.TOP);
+        add(labelDescription, 0, rowIndex++, columns, 1);
+      }
+      add(node, 0, rowIndex++, columns, 1);
+      if (valueDescription != null) {
+        GridPane.setValignment(valueDescription, VPos.TOP);
+        add(valueDescription, 0, rowIndex, columns, 1);
+      }
+    } else {
+      add(fieldLabel, 0, 0, labelSpan, 1);
+      if (labelDescription != null) {
+        GridPane.setValignment(labelDescription, VPos.TOP);
+        add(labelDescription, 0, 1, labelSpan, 1);
+      }
+      add(node, labelSpan, 0, columns - labelSpan, 1);
+      if (valueDescription != null) {
+        GridPane.setValignment(valueDescription, VPos.TOP);
+        add(valueDescription, labelSpan, 1, columns - labelSpan, 1);
+      }
+    }
   }
 
   /**

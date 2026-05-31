@@ -22,6 +22,9 @@ package com.dlsc.formsfx.view.controls;
 
 import com.dlsc.formsfx.model.structure.BooleanField;
 import com.dlsc.formsfx.view.util.VisibilityProperty;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
+import javafx.scene.layout.GridPane;
 import org.controlsfx.control.ToggleSwitch;
 
 /**
@@ -49,8 +52,18 @@ public class ToggleControl extends SimpleControl<BooleanField, ToggleSwitch> {
   }
 
   public ToggleControl() {
+    this(2);
+  }
+
+  /**
+   * Creates a new ToggleControl with the specified label span.
+   *
+   * @param labelSpan the number of columns the label should span
+   */
+  public ToggleControl(int labelSpan) {
+    super(labelSpan);
     getStyleClass().add("toggle-control");
-    
+
     node = new ToggleSwitch();
     node.getStyleClass().add("toggle-control");
   }
@@ -72,7 +85,37 @@ public class ToggleControl extends SimpleControl<BooleanField, ToggleSwitch> {
    */
   @Override
   public void layoutParts() {
+    super.layoutParts();
 
+    int columns = field.getSpan();
+
+    Node labelDescription = field.getLabelDescription();
+    Node valueDescription = field.getValueDescription();
+
+    if (columns < 3) {
+      int rowIndex = 0;
+      add(fieldLabel, 0, rowIndex++, columns, 1);
+      if (labelDescription != null) {
+        GridPane.setValignment(labelDescription, VPos.TOP);
+        add(labelDescription, 0, rowIndex++, columns, 1);
+      }
+      add(node, 0, rowIndex++, columns, 1);
+      if (valueDescription != null) {
+        GridPane.setValignment(valueDescription, VPos.TOP);
+        add(valueDescription, 0, rowIndex, columns, 1);
+      }
+    } else {
+      add(fieldLabel, 0, 0, labelSpan, 1);
+      if (labelDescription != null) {
+        GridPane.setValignment(labelDescription, VPos.TOP);
+        add(labelDescription, 0, 1, labelSpan, 1);
+      }
+      add(node, labelSpan, 0, columns - labelSpan, 1);
+      if (valueDescription != null) {
+        GridPane.setValignment(valueDescription, VPos.TOP);
+        add(valueDescription, labelSpan, 1, columns - labelSpan, 1);
+      }
+    }
   }
 
   /**

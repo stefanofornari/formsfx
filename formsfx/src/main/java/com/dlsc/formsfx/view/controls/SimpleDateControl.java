@@ -38,7 +38,20 @@ public class SimpleDateControl extends SimpleControl<DateField, StackPane> {
     protected DatePicker picker;
     protected Label readOnlyLabel;
 
+    /**
+     * Creates a new SimpleDateControl with the default label span of 2.
+     */
     public SimpleDateControl() {
+        this(2);
+    }
+
+    /**
+     * Creates a new SimpleDateControl with the specified label span.
+     *
+     * @param labelSpan the number of columns the label should span
+     */
+    public SimpleDateControl(int labelSpan) {
+        super(labelSpan);
         getStyleClass().add("simple-date-control");
 
         node = new StackPane();
@@ -70,15 +83,29 @@ public class SimpleDateControl extends SimpleControl<DateField, StackPane> {
         Node labelDescription = field.getLabelDescription();
         Node valueDescription = field.getValueDescription();
 
-        add(fieldLabel, 0, 0, 2, 1);
-        if (labelDescription != null) {
-            GridPane.setValignment(labelDescription, VPos.TOP);
-            add(labelDescription, 0, 1, 2, 1);
-        }
-        add(node, 2, 0, columns - 2, 1);
-        if (valueDescription != null) {
-            GridPane.setValignment(valueDescription, VPos.TOP);
-            add(valueDescription, 2, 1, columns - 2, 1);
+        if (columns < 3) {
+            int rowIndex = 0;
+            add(fieldLabel, 0, rowIndex++, columns, 1);
+            if (labelDescription != null) {
+                GridPane.setValignment(labelDescription, VPos.TOP);
+                add(labelDescription, 0, rowIndex++, columns, 1);
+            }
+            add(node, 0, rowIndex++, columns, 1);
+            if (valueDescription != null) {
+                GridPane.setValignment(valueDescription, VPos.TOP);
+                add(valueDescription, 0, rowIndex, columns, 1);
+            }
+        } else {
+            add(fieldLabel, 0, 0, labelSpan, 1);
+            if (labelDescription != null) {
+                GridPane.setValignment(labelDescription, VPos.TOP);
+                add(labelDescription, 0, 1, labelSpan, 1);
+            }
+            add(node, labelSpan, 0, columns - labelSpan, 1);
+            if (valueDescription != null) {
+                GridPane.setValignment(valueDescription, VPos.TOP);
+                add(valueDescription, labelSpan, 1, columns - labelSpan, 1);
+            }
         }
     }
 

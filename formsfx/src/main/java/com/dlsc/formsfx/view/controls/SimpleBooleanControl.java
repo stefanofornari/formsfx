@@ -42,9 +42,22 @@ public class SimpleBooleanControl extends SimpleControl<BooleanField, VBox> {
      */
     protected CheckBox checkBox;
 
+    /**
+     * Creates a new SimpleBooleanControl with the default label span of 2.
+     */
     public SimpleBooleanControl() {
+        this(2);
+    }
+
+    /**
+     * Creates a new SimpleBooleanControl with the specified label span.
+     *
+     * @param labelSpan the number of columns the label should span
+     */
+    public SimpleBooleanControl(int labelSpan) {
+        super(labelSpan);
         getStyleClass().add("simple-boolean-control");
-        
+
         node = new VBox();
         node.getStyleClass().add("simple-boolean-control");
     }
@@ -74,15 +87,28 @@ public class SimpleBooleanControl extends SimpleControl<BooleanField, VBox> {
         Node labelDescription = field.getLabelDescription();
         Node valueDescription = field.getValueDescription();
 
-        add(fieldLabel, 0, 0, 2, 1);
-        if (labelDescription != null) {
-            GridPane.setValignment(labelDescription, VPos.TOP);
-            add(labelDescription, 0, 1, 2, 1);
-        }
-        add(node, 2, 0, columns - 2, 1);
-        if (valueDescription != null) {
-            GridPane.setValignment(valueDescription, VPos.TOP);
-            add(valueDescription, 2, 1, columns - 2, 1);
+        if (columns < 3) {
+            add(fieldLabel, 0, 0, columns, 1);
+            if (labelDescription != null) {
+                GridPane.setValignment(labelDescription, VPos.TOP);
+                add(labelDescription, 0, 1, columns, 1);
+            }
+            add(node, 0, 2, columns, 1);
+            if (valueDescription != null) {
+                GridPane.setValignment(valueDescription, VPos.TOP);
+                add(valueDescription, 0, 3, columns, 1);
+            }
+        } else {
+            add(fieldLabel, 0, 0, labelSpan, 1);
+            if (labelDescription != null) {
+                GridPane.setValignment(labelDescription, VPos.TOP);
+                add(labelDescription, 0, 1, labelSpan, 1);
+            }
+            add(node, labelSpan, 0, columns - labelSpan, 1);
+            if (valueDescription != null) {
+                GridPane.setValignment(valueDescription, VPos.TOP);
+                add(valueDescription, labelSpan, 1, columns - labelSpan, 1);
+            }
         }
     }
 

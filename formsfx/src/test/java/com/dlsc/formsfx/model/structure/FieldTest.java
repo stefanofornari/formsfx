@@ -216,10 +216,12 @@ public class FieldTest {
                 .placeholder("temp")
                 .label("Field")
                 .required("error")
+                .labelSpan(5)
                 .span(6)
                 .span(ColSpan.HALF);
 
         then(s.getValue()).isEqualTo("test");
+        then(s.getLabelSpan()).isEqualTo(5);
         then(s.getSpan()).isEqualTo(6);
         then(s.getStyleClass().size()).isEqualTo(2);
         then(s.getLabel()).isEqualTo("Field");

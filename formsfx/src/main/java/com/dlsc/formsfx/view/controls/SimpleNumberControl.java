@@ -44,7 +44,20 @@ public abstract class SimpleNumberControl<F extends DataField, D extends Number>
     protected Spinner<D> editableSpinner;
     protected Label readOnlyLabel;
 
+    /**
+     * Creates a new SimpleNumberControl with the default label span of 2.
+     */
     public SimpleNumberControl() {
+        this(2);
+    }
+
+    /**
+     * Creates a new SimpleNumberControl with the specified label span.
+     *
+     * @param labelSpan the number of columns the label should span
+     */
+    public SimpleNumberControl(int labelSpan) {
+        super(labelSpan);
         node = new StackPane();
     }
 
@@ -92,15 +105,15 @@ public abstract class SimpleNumberControl<F extends DataField, D extends Number>
                 add(valueDescription, 0, rowIndex, columns, 1);
             }
         } else {
-            add(fieldLabel, 0, 0, 2, 1);
+            add(fieldLabel, 0, 0, labelSpan, 1);
             if (labelDescription != null) {
                 GridPane.setValignment(labelDescription, VPos.TOP);
-                add(labelDescription, 0, 1, 2, 1);
+                add(labelDescription, 0, 1, labelSpan, 1);
             }
-            add(node, 2, 0, columns - 2, 1);
+            add(node, labelSpan, 0, columns - labelSpan, 1);
             if (valueDescription != null) {
                 GridPane.setValignment(valueDescription, VPos.TOP);
-                add(valueDescription, 2, 1, columns - 2, 1);
+                add(valueDescription, labelSpan, 1, columns - labelSpan, 1);
             }
         }
     }

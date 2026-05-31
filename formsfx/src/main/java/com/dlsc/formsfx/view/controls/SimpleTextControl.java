@@ -22,6 +22,7 @@ package com.dlsc.formsfx.view.controls;
 
 import com.dlsc.formsfx.model.structure.StringField;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
@@ -50,7 +51,20 @@ public class SimpleTextControl extends SimpleControl<StringField, StackPane> {
     protected TextArea editableArea;
     protected Label readOnlyLabel;
 
+    /**
+     * Creates a new SimpleTextControl with the default label span of 2.
+     */
     public SimpleTextControl() {
+        this(2);
+    }
+
+    /**
+     * Creates a new SimpleTextControl with the specified label span.
+     *
+     * @param labelSpan the number of columns the label should span
+     */
+    public SimpleTextControl(int labelSpan) {
+        super(labelSpan);
         getStyleClass().add("simple-text-control");
 
         node = new StackPane();
@@ -64,11 +78,14 @@ public class SimpleTextControl extends SimpleControl<StringField, StackPane> {
     public void initializeParts() {
         super.initializeParts();
 
-        editableField = new TextField(field.getValue());
-        editableArea = new TextArea(field.getValue());
+        ObservableList<String> fieldStyleClass = field.getStyleClass();
+        node.getStyleClass().addAll(fieldStyleClass);
 
-        readOnlyLabel = new Label(field.getValue());
-        fieldLabel = new Label(field.labelProperty().getValue());
+        editableField = new TextField(field.getValue()); editableField.getStyleClass().addAll(fieldStyleClass);
+        editableArea = new TextArea(field.getValue()); editableArea.getStyleClass().addAll(fieldStyleClass);
+
+        readOnlyLabel = new Label(field.getValue()); readOnlyLabel.getStyleClass().addAll(fieldStyleClass);
+        fieldLabel = new Label(field.labelProperty().getValue()); fieldLabel.getStyleClass().addAll(fieldStyleClass);
         editableField.setPromptText(field.placeholderProperty().getValue());
     }
 
@@ -84,14 +101,10 @@ public class SimpleTextControl extends SimpleControl<StringField, StackPane> {
         readOnlyLabel.setPrefHeight(26);
 
         editableArea.getStyleClass().add("simple-textarea");
+        editableArea.getStyleClass().addAll(field.getStyleClass());
         editableArea.setPrefRowCount(5);
         editableArea.setPrefHeight(80);
         editableArea.setWrapText(true);
-
-        if (field.isMultiline()) {
-            node.setPrefHeight(80);
-            readOnlyLabel.setPrefHeight(80);
-        }
 
         node.getChildren().addAll(editableField, editableArea, readOnlyLabel);
 
@@ -115,15 +128,15 @@ public class SimpleTextControl extends SimpleControl<StringField, StackPane> {
                 add(valueDescription, 0, rowIndex, columns, 1);
             }
         } else {
-            add(fieldLabel, 0, 0, 2, 1);
+            add(fieldLabel, 0, 0, labelSpan, 1);
             if (labelDescription != null) {
                 GridPane.setValignment(labelDescription, VPos.TOP);
-                add(labelDescription, 0, 1, 2, 1);
+                add(labelDescription, 0, 1, labelSpan, 1);
             }
-            add(node, 2, 0, columns - 2, 1);
+            add(node, labelSpan, 0, columns - labelSpan, 1);
             if (valueDescription != null) {
                 GridPane.setValignment(valueDescription, VPos.TOP);
-                add(valueDescription, 2, 1, columns - 2, 1);
+                add(valueDescription, labelSpan, 1, columns - labelSpan, 1);
             }
         }
     }

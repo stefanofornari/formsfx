@@ -25,10 +25,13 @@ import java.nio.file.Paths;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -85,6 +88,22 @@ public class SimpleChooserControl extends SimpleControl<StringField, StackPane> 
 
   /**
    * Create a new SimpleChooserControl.
+   */
+  public SimpleChooserControl() {
+    this("Browse", null, false);
+  }
+
+  /**
+   * Create a new SimpleChooserControl.
+   *
+   * @param labelSpan the number of columns the label should span
+   */
+  public SimpleChooserControl(int labelSpan) {
+    this("Browse", null, false, labelSpan);
+  }
+
+  /**
+   * Create a new SimpleChooserControl.
    *
    * @param buttonText       Text for the button to show, e.g. "Browse"
    * @param initialDirectory An optional initial path, can be null.
@@ -95,7 +114,24 @@ public class SimpleChooserControl extends SimpleControl<StringField, StackPane> 
   public SimpleChooserControl(String buttonText,
                               File initialDirectory,
                               boolean directory) {
+    this(buttonText, initialDirectory, directory, 2);
+  }
 
+  /**
+   * Create a new SimpleChooserControl.
+   *
+   * @param buttonText       Text for the button to show, e.g. "Browse"
+   * @param initialDirectory An optional initial path, can be null.
+   *                         If null, will use the path from the previously
+   *                         chosen file if present.
+   * @param directory        true, if only directories are allowed
+   * @param labelSpan        the number of columns the label should span
+   */
+  public SimpleChooserControl(String buttonText,
+                              File initialDirectory,
+                              boolean directory,
+                              int labelSpan) {
+    super(labelSpan);
     getStyleClass().add("simple-chooser-control");
     node = new StackPane();
     node.getStyleClass().add("simple-chooser-control");
@@ -169,6 +205,8 @@ public class SimpleChooserControl extends SimpleControl<StringField, StackPane> 
    */
   @Override
   public void layoutParts() {
+    super.layoutParts();
+
     readOnlyLabel.getStyleClass().add("read-only-label");
 
     readOnlyLabel.setPrefHeight(26);
@@ -186,6 +224,36 @@ public class SimpleChooserControl extends SimpleControl<StringField, StackPane> 
     node.getChildren().add(contentBox);
 
     node.setAlignment(Pos.CENTER_LEFT);
+
+    Node labelDescription = field.getLabelDescription();
+    Node valueDescription = field.getValueDescription();
+
+    int columns = field.getSpan();
+
+    if (columns < 3) {
+      int rowIndex = 0;
+      add(fieldLabel, 0, rowIndex++, columns, 1);
+      if (labelDescription != null) {
+        GridPane.setValignment(labelDescription, VPos.TOP);
+        add(labelDescription, 0, rowIndex++, columns, 1);
+      }
+      add(node, 0, rowIndex++, columns, 1);
+      if (valueDescription != null) {
+        GridPane.setValignment(valueDescription, VPos.TOP);
+        add(valueDescription, 0, rowIndex, columns, 1);
+      }
+    } else {
+      add(fieldLabel, 0, 0, labelSpan, 1);
+      if (labelDescription != null) {
+        GridPane.setValignment(labelDescription, VPos.TOP);
+        add(labelDescription, 0, 1, labelSpan, 1);
+      }
+      add(node, labelSpan, 0, columns - labelSpan, 1);
+      if (valueDescription != null) {
+        GridPane.setValignment(valueDescription, VPos.TOP);
+        add(valueDescription, labelSpan, 1, columns - labelSpan, 1);
+      }
+    }
   }
 
   /**

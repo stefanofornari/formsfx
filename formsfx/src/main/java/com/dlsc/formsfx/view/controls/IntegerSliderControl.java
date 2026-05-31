@@ -24,8 +24,11 @@ import com.dlsc.formsfx.model.structure.IntegerField;
 import com.dlsc.formsfx.view.util.VisibilityProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
@@ -71,7 +74,18 @@ public class IntegerSliderControl extends SimpleControl<IntegerField, HBox> {
    * @param max maximum slider value
    */
   public IntegerSliderControl(int min, int max) {
-    super();
+    this(min, max, 2);
+  }
+
+  /**
+   * Creates a slider for integer values.
+   *
+   * @param min minimum slider value
+   * @param max maximum slider value
+   * @param labelSpan the number of columns the label should span
+   */
+  public IntegerSliderControl(int min, int max, int labelSpan) {
+    super(labelSpan);
     this.min = min;
     this.max = max;
 
@@ -105,12 +119,44 @@ public class IntegerSliderControl extends SimpleControl<IntegerField, HBox> {
    */
   @Override
   public void layoutParts() {
+    super.layoutParts();
+
     node.getChildren().addAll(slider, valueLabel);
     HBox.setHgrow(slider, Priority.ALWAYS);
     valueLabel.setAlignment(Pos.CENTER);
     valueLabel.setMinWidth(VALUE_LABEL_PADDING);
     node.setSpacing(VALUE_LABEL_PADDING);
     HBox.setMargin(valueLabel, new Insets(0, VALUE_LABEL_PADDING, 0, 0));
+
+    int columns = field.getSpan();
+
+    Node labelDescription = field.getLabelDescription();
+    Node valueDescription = field.getValueDescription();
+
+    if (columns < 3) {
+      int rowIndex = 0;
+      add(fieldLabel, 0, rowIndex++, columns, 1);
+      if (labelDescription != null) {
+        GridPane.setValignment(labelDescription, VPos.TOP);
+        add(labelDescription, 0, rowIndex++, columns, 1);
+      }
+      add(node, 0, rowIndex++, columns, 1);
+      if (valueDescription != null) {
+        GridPane.setValignment(valueDescription, VPos.TOP);
+        add(valueDescription, 0, rowIndex, columns, 1);
+      }
+    } else {
+      add(fieldLabel, 0, 0, labelSpan, 1);
+      if (labelDescription != null) {
+        GridPane.setValignment(labelDescription, VPos.TOP);
+        add(labelDescription, 0, 1, labelSpan, 1);
+      }
+      add(node, labelSpan, 0, columns - labelSpan, 1);
+      if (valueDescription != null) {
+        GridPane.setValignment(valueDescription, VPos.TOP);
+        add(valueDescription, labelSpan, 1, columns - labelSpan, 1);
+      }
+    }
   }
 
   /**
