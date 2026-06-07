@@ -1,6 +1,6 @@
 # Change Log
 
-## 26.0.3 - 2026-06-07
+## 26.0.4 - 2026-06-07
 [Full Changelog](https://github.com/dlsc-software-consulting-gmbh/formsfx/compare/26.0.2...26.0.3)
 
 **Implemented enhancements:**
