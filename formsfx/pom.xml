@@ -222,4 +222,9 @@
 
     </dependencies>
 
+    <scm>
+        <connection>scm:git:git@github.com:stefanofornari/formsfx.git</connection>
+        <url>https://github.com/stefanofornari/formsfx</url>
+    </scm>
+
 </project>
