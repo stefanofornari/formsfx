@@ -25,7 +25,6 @@ import com.dlsc.formsfx.model.util.BindingMode;
 import com.dlsc.formsfx.model.util.TranslationService;
 import com.dlsc.formsfx.view.controls.SimpleControl;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 
 import java.time.LocalDate;
@@ -43,6 +42,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+import ste.commons.javafx.property.IntegerProperty;
 
 /**
  * This class provides the base implementation for a FormsFX field. It is not
@@ -107,7 +118,7 @@ public abstract class Field<F extends Field<F>> extends Element<F> implements Fo
      * The labelSpan determines how many columns the label should span in the
      * control's grid layout.
      */
-    protected final IntegerProperty labelSpan = new SimpleIntegerProperty(-1);
+    protected final IntegerProperty labelSpan = new IntegerProperty(-1);
 
     /**
      * The results of the field's validation is stored in this property. After
@@ -272,7 +283,7 @@ public abstract class Field<F extends Field<F>> extends Element<F> implements Fo
      * @return Returns a new {@link IntegerField}.
      */
     public static IntegerField ofIntegerType(int defaultValue) {
-        return new IntegerField(new SimpleIntegerProperty(defaultValue), new SimpleIntegerProperty(defaultValue));
+        return new IntegerField(new IntegerProperty(defaultValue), new IntegerProperty(defaultValue));
     }
 
     /**
@@ -284,7 +295,7 @@ public abstract class Field<F extends Field<F>> extends Element<F> implements Fo
      * @return Returns a new {@link IntegerField}.
      */
     public static IntegerField ofIntegerType(IntegerProperty binding) {
-        return new IntegerField(new SimpleIntegerProperty(binding.getValue()), new SimpleIntegerProperty(binding.getValue())).bind(binding);
+        return new IntegerField(new IntegerProperty(binding.getValue()), new IntegerProperty(binding.getValue())).bind(binding);
     }
 
     /**

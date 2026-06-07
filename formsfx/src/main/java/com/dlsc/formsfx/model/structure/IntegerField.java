@@ -9,9 +9,9 @@ package com.dlsc.formsfx.model.structure;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,8 +22,7 @@ package com.dlsc.formsfx.model.structure;
 
 
 import com.dlsc.formsfx.view.controls.SimpleIntegerControl;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import ste.commons.javafx.property.IntegerProperty;
 
 /**
  * This class provides an implementation of a {@link Field} containing a
@@ -44,7 +43,7 @@ public class IntegerField extends DataField<IntegerProperty, Integer, IntegerFie
      *              The property that is used to store the latest persisted
      *              value of the field.
      */
-    protected IntegerField(SimpleIntegerProperty valueProperty, SimpleIntegerProperty persistentValueProperty) {
+    protected IntegerField(IntegerProperty valueProperty, IntegerProperty persistentValueProperty) {
         super(valueProperty, persistentValueProperty);
 
         stringConverter = new AbstractStringConverter<Integer>() {

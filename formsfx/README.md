@@ -264,6 +264,7 @@ All fields are validated whenever end users edit the contained data. FormsFX off
 | `CustomValidator` | Define a predicate that returns whether the field is valid or not. |
 | `DoubleRangeValidator` | Define a number range which is considered valid. This range can be limited in either one direction or in both directions. |
 | `IntegerRangeValidator` | Define a number range which is considered valid. This range can be limited in either one direction or in both directions. |
+| `IntegerValidator` | Validate whether a string is a valid integer. Optionally allows empty or null values. |
 | `RegexValidator` | Valiate text against a regular expression. This validator offers pre-defined expressions for common use cases, such as email addresses.
 | `SelectionLengthValidator` | Define a length interval which is considered valid. This range can be limited in either one direction or in both directions. |
 | `StringLengthValidator` | Define a length interval which is considered valid. This range can be limited in either one direction or in both directions. |

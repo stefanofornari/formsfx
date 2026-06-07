@@ -175,6 +175,12 @@
             <artifactId>controlsfx</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.stefanofornari</groupId>
+            <artifactId>commonsfx</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <!-- TEST DEPENDENCIES -->
 
         <dependency>

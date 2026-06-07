@@ -25,12 +25,10 @@ import com.dlsc.formsfx.view.util.ColSpan;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -38,6 +36,8 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import ste.commons.javafx.property.IntegerProperty;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
@@ -133,7 +133,7 @@ public class FieldTest {
     public void dataBindingTest() {
         StringProperty s = new SimpleStringProperty("test");
         DoubleProperty d = new SimpleDoubleProperty(1.0);
-        IntegerProperty i = new SimpleIntegerProperty(3);
+        IntegerProperty i = new IntegerProperty(3);
         BooleanProperty b = new SimpleBooleanProperty(false);
 
         StringField sf = Field.ofStringType(s);
