@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>formsfx</artifactId>
-    <version>26.0.4-SNAPSHOT</version>
+    <version>26.0.4</version>
     <packaging>jar</packaging>
 
     <name>FormsFX Core</name>
@@ -178,7 +178,7 @@
         <dependency>
             <groupId>com.github.stefanofornari</groupId>
             <artifactId>commonsfx</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
 
         <!-- TEST DEPENDENCIES -->
@@ -222,4 +222,8 @@
 
     </dependencies>
 
+
+  <scm>
+    <tag>formsfx-26.0.4</tag>
+  </scm>
 </project>
