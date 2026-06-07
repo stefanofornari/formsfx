@@ -141,6 +141,9 @@ public abstract class SimpleNumberControl<F extends DataField, D extends Number>
         editableSpinner.getEditor().setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case UP:
+                    if (editableSpinner.getValue() == null) {
+
+                    }
                     editableSpinner.increment(1);
                     break;
                 case DOWN:

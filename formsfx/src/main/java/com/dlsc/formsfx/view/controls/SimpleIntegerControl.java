@@ -54,7 +54,9 @@ public class SimpleIntegerControl extends SimpleNumberControl<IntegerField, Inte
     public void initializeParts() {
         super.initializeParts();
 
-        editableSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, field.getValue()));
+        if (field.getValue() != null) {
+            editableSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, field.getValue()));
+        }
     }
 
     /**

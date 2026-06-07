@@ -33,4 +33,5 @@ module com.dlsc.formsfx {
     exports com.dlsc.formsfx.view.util;
 
     opens com.dlsc.formsfx.view.renderer;
+    requires commonsfx;
 }

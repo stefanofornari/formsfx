@@ -5,11 +5,11 @@
     <parent>
         <groupId>com.github.stefanofornari</groupId>
         <artifactId>formsfxparent</artifactId>
-        <version>26.0.2</version>
+        <version>26.0.3</version>
     </parent>
 
     <artifactId>formsfx</artifactId>
-    <version>26.0.4-SNAPSHOT</version>
+    <version>26.0.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>FormsFX Core</name>
@@ -40,82 +40,6 @@
                         <java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
                     </systemPropertyVariables>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.4.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.12.0</version>
-                <configuration>
-                    <failOnError>false</failOnError>
-                    <force>true</force>
-                    <windowtitle>FormsFX API</windowtitle>
-                    <additionalJOptions>
-                        <additionalJOption>-J-Djavafx.javadoc=true</additionalJOption>
-                        <additionalJOption>-html5</additionalJOption>
-                    </additionalJOptions>
-                    <docfilessubdirs>true</docfilessubdirs>
-                    <tags>
-                        <tag>
-                            <name>defaultValue</name>
-                            <placement>a</placement>
-                            <head>Default Value:</head>
-                        </tag>
-                        <tag>
-                            <name>apiNote</name>
-                            <placement>a</placement>
-                            <head>API Note:</head>
-                        </tag>
-                        <tag>
-                            <name>implSpec</name>
-                            <placement>a</placement>
-                            <head>Implementation Requirements:</head>
-                        </tag>
-                        <tag>
-                            <name>implNote</name>
-                            <placement>a</placement>
-                            <head>Implementation Note:</head>
-                        </tag>
-                    </tags>
-                    <sourceFileExcludes>
-                        <sourceFileExclude>**\/\module-info.java</sourceFileExclude>
-                    </sourceFileExcludes>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.ow2.asm</groupId>
-                        <artifactId>asm</artifactId>
-                        <version>7.0</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>make-docs</id> <!-- this is used for inheritance merges -->
-                        <phase>deploy</phase> <!-- bind to the packaging phase -->
-                        <goals>
-                            <goal>aggregate</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -175,6 +99,12 @@
             <artifactId>controlsfx</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.stefanofornari</groupId>
+            <artifactId>commonsfx</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
         <!-- TEST DEPENDENCIES -->
 
         <dependency>
@@ -215,5 +145,11 @@
         </dependency>
 
     </dependencies>
+
+    <scm>
+        <connection>scm:git:git@github.com:stefanofornari/formsfx.git</connection>
+        <url>https://github.com/stefanofornari/formsfx</url>
+      <tag>formsfxparent-26.0.3</tag>
+  </scm>
 
 </project>

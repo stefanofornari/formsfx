@@ -45,7 +45,7 @@ public class SimpleIntegerControlTest extends AbstractFxTest {
         field = Field.ofIntegerType(10).label("Test label");
         createForm(field);
     }
-
+    
     @Test
     public void labelSpan_default_is_2() {
         SimpleIntegerControl control = new SimpleIntegerControl();

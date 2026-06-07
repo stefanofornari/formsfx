@@ -104,14 +104,14 @@ public class IntegerSliderControl extends SimpleControl<IntegerField, HBox> {
 
     fieldLabel = new Label(field.labelProperty().getValue());
 
-    valueLabel = new Label(String.valueOf(field.getValue().intValue()));
+    valueLabel = new Label(String.valueOf(safeFieldValue()));
 
     slider = new Slider();
     slider.setMin(min);
     slider.setMax(max);
     slider.setShowTickLabels(false);
     slider.setShowTickMarks(false);
-    slider.setValue(field.getValue());
+    slider.setValue(safeFieldValue());
   }
 
   /**
@@ -196,6 +196,18 @@ public class IntegerSliderControl extends SimpleControl<IntegerField, HBox> {
     slider.valueProperty().addListener((observable, oldValue, newValue) -> {
       field.userInputProperty().setValue(String.valueOf(newValue.intValue()));
     });
+  }
+
+  private int safeFieldValue() {
+    //
+    // ste.javafx.commonsfx.property.IntegerProperty() can be null, which is not
+    // a valid state in the case of a slider..
+    //
+    if (field.getValue() == null) {
+        field.valueProperty().setValue(0);
+    }
+
+    return field.getValue();
   }
 
 }

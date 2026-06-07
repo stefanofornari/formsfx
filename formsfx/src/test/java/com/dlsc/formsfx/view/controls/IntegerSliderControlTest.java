@@ -21,14 +21,14 @@ package com.dlsc.formsfx.view.controls;
 
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.IntegerField;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
+
+import ste.commons.javafx.property.IntegerProperty;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
@@ -44,7 +44,7 @@ public class IntegerSliderControlTest extends AbstractFxTest {
 
     @Override
     protected void init(Stage stage, javafx.scene.layout.BorderPane root) {
-        final IntegerProperty ip = new SimpleIntegerProperty();
+        final IntegerProperty ip = new IntegerProperty();
         field = Field.ofIntegerType(ip)
             .label("Slider")
             .render(() -> IntegerSliderControl.of(0, 10, null));

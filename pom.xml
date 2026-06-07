@@ -6,13 +6,13 @@
     <groupId>com.github.stefanofornari</groupId>
     <artifactId>formsfxparent</artifactId>
     <packaging>pom</packaging>
-    <version>26.0.2</version>
+    <version>26.0.3</version>
     <url>https://github.com/stefanofornari/formsfx</url>
     <description>
         FormsFX - Create forms with ease and creates well-designed and
         user-friendly forms by default.
 
-        This is a repackaging with modification of original
+        This is a repackaging with modification of origina3
         dlsc-software-consulting-gmbh/FormsFX
     </description>
 
@@ -54,6 +54,55 @@
         <!-- Your release profile -->
         <profile>
             <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.4.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.12.0</version>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
@@ -86,21 +135,6 @@
                     <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.central</groupId>
@@ -140,7 +174,7 @@
     <scm>
         <connection>scm:git:git@github.com:stefanofornari/formsfx.git</connection>
         <url>https://github.com/stefanofornari/formsfx</url>
-        <tag>formsfxparent-26.0.2</tag>
+        <tag>formsfxparent-26.0.3</tag>
     </scm>
 
     <distributionManagement>

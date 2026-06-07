@@ -38,7 +38,7 @@
 }
 
 .simple-textarea:focused {
-    -fx-highlight-fill: -fx-accent;
+    -fx-highlight-fill: -color-accent-emphasis;
     -fx-highlight-text-fill: white;
     /*noinspection CssInvalidFunction*/
     -fx-background-color:
